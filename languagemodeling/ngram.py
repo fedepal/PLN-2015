@@ -47,7 +47,6 @@ class NGram(object):
             prev_tokens = []
         return float(self.count(tuple(prev_tokens+[token]))) / self.count(tuple(prev_tokens))
 
-
     def sent_prob(self, sent):
         """Probability of a sentence. Warning: subject to underflow problems.
 
@@ -80,48 +79,25 @@ class NGram(object):
             result += log2(c_prob)
         return result
 
-class NGramGenerator:
-
-    def __init__(self, model):
-        """
-        model -- n-gram model.
-        """
-        self.model = model
-    def generate_sent(self):
-        """Randomly generate a sentence."""
-
-    def generate_token(self, prev_tokens=None):
-        """Randomly generate a token, given prev_tokens.
-
-        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
-        """
-
-class AddOneNGram:
+class AddOneNGram(NGram):
 
     def __init__(self, n, sents):
         """
         n -- order of the model.
         sents -- list of sentences, each one being a list of tokens.
         """
-        assert n > 0
-        self.n = n
-        self.counts = counts = defaultdict(int)
-        for sent in sents:
-            sent[0:0] += (n-1) * ['<s>']
-            sent.append('</s>')
-            for i in range(len(sent) - n + 1):
-                ngram = tuple(sent[i: i + n])
-                counts[ngram] += 1
-                counts[ngram[:-1]] += 1
 
+        super().__init__(n,sents)
 
-    def count(self, tokens):
-        """Count for an n-gram or (n-1)-gram.
+        #Vocabulary Size
+        v = set()
+        for word, count in self.counts.items():
+            if count > 0:
+                v = v.union(set(word))
 
-        tokens -- the n-gram or (n-1)-gram tuple.
-        """
-        return self.counts[tokens]
-
+        if self.n > 1:
+            v.remove('<s>')
+        self.v = len(v)
 
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
@@ -133,16 +109,74 @@ class AddOneNGram:
             prev_tokens = []
         return float(self.count(tuple(prev_tokens+[token]))+1) / (self.count(tuple(prev_tokens)) + self.V())
 
-
     def V(self):
         """Size of the vocabulary.
         """
+        return self.v
 
-        v = set()
-        for word, count in self.counts.items():
-            if count > 0:
-                v = v.union(set(word))
+class NGramGenerator:
 
-        if self.n > 1:
-            v.remove('<s>')
-        return len(v)
+    def __init__(self, model):
+        """
+        model -- n-gram model.
+        """
+        #python ordena las tuplas,
+        #x tiene la probabilidad,palabra key = lambda x: (x[1],x[0]),reverse=True ordenar de mayor a menor
+        # key = lambda x:(-x[1],x[0]) decreciente en probabilidad, creciente en palabras.
+
+    def generate_sent(self):
+        """Randomly generate a sentence."""
+
+    def generate_token(self, prev_tokens=None):
+        """Randomly generate a token, given prev_tokens.
+
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """
+
+class InterpolatedNGram(NGram):
+
+    def __init__(self, n, sents, gamma=None, addone=True):
+        """
+        n -- order of the model.
+        sents -- list of sentences, each one being a list of tokens.
+        gamma -- interpolation hyper-parameter (if not given, estimate using
+            held-out data).
+        addone -- whether to use addone smoothing (default: True).
+        """
+        super().__init__(n,sents)
+
+
+        if gamma == None:
+            held_out = sents[-int(0.1*len(sents)):]
+            sents = sents[:-int(0.1*len(sents))]
+            gamma = estimate_gamma(held_out)
+
+        models=[]
+        models.append(AddOneNGram(1,sents))
+        for i in range(1,n):
+            models.append(NGram(1,sents))
+
+        for i in range(n):
+            #0,1,2,3,4
+            for sent in sents:
+                for k in range(n-1,len(sent)):
+                    count = model[i].count(sent[k-n+1:k])
+                    lamb = (1.0 - lamb) * gamma)
+                    result +=
+"""
+λ_1 = c(x_1 ... x_{n-1}) / (c(x_1 ... x_{n-1}) + gamma)
+
+λ_2 = (1 - λ_1) c(x_2 ... x_{n-1}) / (c(x_2 ... x_{n-1}) + gamma)
+
+λ_3 = (1 - λ_1 - λ_2) c(x_3 ... x_{n-1}) / (c(x_3 ... x_{n-1}) + gamma)
+
+λ_n = (1 - λ_1 - ... - λ_{n-1})
+"""
+
+
+
+
+
+
+        def estimate_gamma(self, held_out)
+            return gamma
