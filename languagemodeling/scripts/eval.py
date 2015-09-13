@@ -34,7 +34,8 @@ if __name__ == '__main__':
                                  sent_tokenizer=LazyLoader('tokenizers/punkt/spanish.pickle')).sents()
 
      #Slice data 10% test data
-     sents = sents[-int(0.1*len(sents)):]
+     from math import ceil
+     sents = sents[-ceil(0.1*len(sents)):]
 
      #Perplexity
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
          log_prob += model.sent_log_prob(sent)
          num_words += len(sent)
 
-     cross-entropy = -(1.0/num_words)*log_prob
-     perplexity = pow (2,cross-entropy)
+     cross_entropy = (1.0/num_words)*log_prob
+     perplexity = pow (2,-cross_entropy)
 
      print ("Perplexity: ", perplexity)

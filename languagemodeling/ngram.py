@@ -83,7 +83,7 @@ class NGram(object):
         for k in range(n-1,len(sent)):
             c_prob = self.cond_prob(sent[k],sent[k-n+1:k])
             if c_prob == 0:
-                result = float('-inf')
+                result = -float('inf')
                 break
             result += log2(c_prob)
         return result
@@ -99,14 +99,8 @@ class AddOneNGram(NGram):
         super().__init__(n,sents)
 
         #Vocabulary Size
-        v = set()
-        for word, count in self.counts.items():
-            if count > 0:
-                v = v.union(set(word))
-
-        if self.n > 1:
-            v.remove('<s>')
-        self.v = len(v)
+        from itertools import chain
+        self.v = len(set(list(chain.from_iterable(sents)))) + 1
 
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
@@ -152,15 +146,11 @@ class InterpolatedNGram(NGram):
             held-out data).
         addone -- whether to use addone smoothing (default: True).
         """
-        # super().__init__(n,sents)
-
-
         self.n = n
         if not gamma:
             from math import ceil
             held_out = sents[-ceil(0.1*len(sents)):]
             sents = sents[:-ceil(0.1*len(sents))]
-            print("calculando held-out")
             gamma = self.estimate_gamma(held_out)
 
         self.gamma = gamma
@@ -190,8 +180,9 @@ class InterpolatedNGram(NGram):
                 lamb = 1.0 - lamb_n
             else:
                 count = self.models[i-1].count(tuple(prev_tokens))
-                lamb = (1.0 - lamb) * (count/(count + self.gamma))
+                lamb = (1.0 - lamb_n) * (count/(count + self.gamma))
                 lamb_n = lamb_n + lamb
+
             result += lamb * self.models[i-1].cond_prob(token,prev_tokens)
             prev_tokens = prev_tokens[1:]
 

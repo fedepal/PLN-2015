@@ -1,7 +1,7 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> [-m <model>] -o <file>
+  train.py -n <n> [-m <model>] [-g <gamma>] [--addone] -o <file>
   train.py -h | --help
 
 Options:
@@ -9,6 +9,9 @@ Options:
   -m <model>    Model to use [default: ngram]:
                   ngram: Unsmoothed n-grams.
                   addone: N-grams with add-one smoothing.
+                  inter: N-gramas with interpolation.
+  -g <gamma>    Gamma value for Interpolation.
+  --addone     Use addone for Interpolation
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
@@ -18,7 +21,7 @@ import pickle
 from nltk import RegexpTokenizer
 from nltk.corpus import PlaintextCorpusReader
 from nltk.data import LazyLoader
-from languagemodeling.ngram import NGram, AddOneNGram
+from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram
 import os.path
 
 if __name__ == '__main__':
@@ -39,7 +42,8 @@ if __name__ == '__main__':
                                 sent_tokenizer=LazyLoader('tokenizers/punkt/spanish.pickle')).sents()
 
     #slice data 90% train data
-    sents = sents[:-int(0.1*len(sents))]
+    from math import ceil
+    sents = sents[:-ceil(0.1*len(sents))]
 
     # train the model
     n = int(opts['-n'])
@@ -49,6 +53,12 @@ if __name__ == '__main__':
         model = NGram(n, sents)
     elif m == "addone":
         model = AddOneNGram(n, sents)
+    elif m == "inter":
+        gamma = opts['-g']
+        addone = opts['--addone']
+        float(gamma) if gamma is not None else None
+        model = InterpolatedNGram(n, sents, gamma, addone)
+
     else:
         print(__doc__)
         exit(0)
