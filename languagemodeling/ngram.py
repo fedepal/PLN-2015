@@ -20,6 +20,9 @@ class NGram(object):
                 ngram = tuple(sent[i: i + n])
                 counts[ngram] += 1
                 counts[ngram[:-1]] += 1
+            for i in range(0,n-1):
+                sent.pop(0)
+            sent.pop()
 
     def prob(self, token, prev_tokens=None):
         n = self.n
@@ -45,7 +48,13 @@ class NGram(object):
         """
         if not prev_tokens:
             prev_tokens = []
-        return float(self.count(tuple(prev_tokens+[token]))) / self.count(tuple(prev_tokens))
+        if '</s>' in prev_tokens:
+            return 0
+
+        prev_count = self.count(tuple(prev_tokens))
+        if prev_count == 0:
+            return 0
+        return float(self.count(tuple(prev_tokens+[token]))) / prev_count
 
     def sent_prob(self, sent):
         """Probability of a sentence. Warning: subject to underflow problems.
@@ -143,40 +152,66 @@ class InterpolatedNGram(NGram):
             held-out data).
         addone -- whether to use addone smoothing (default: True).
         """
-        super().__init__(n,sents)
+        # super().__init__(n,sents)
 
 
-        if gamma == None:
-            held_out = sents[-int(0.1*len(sents)):]
-            sents = sents[:-int(0.1*len(sents))]
-            gamma = estimate_gamma(held_out)
+        self.n = n
+        if not gamma:
+            from math import ceil
+            held_out = sents[-ceil(0.1*len(sents)):]
+            sents = sents[:-ceil(0.1*len(sents))]
+            print("calculando held-out")
+            gamma = self.estimate_gamma(held_out)
 
-        models=[]
-        models.append(AddOneNGram(1,sents))
-        for i in range(1,n):
-            models.append(NGram(1,sents))
+        self.gamma = gamma
+        self.models=[]
+        if addone:
+            for i in range(1,n+1):
+                self.models.append(AddOneNGram(i,sents))
+        else:
+            for i in range(1,n+1):
+                self.models.append(NGram(i,sents))
 
-        for i in range(n):
-            #0,1,2,3,4
-            for sent in sents:
-                for k in range(n-1,len(sent)):
-                    count = model[i].count(sent[k-n+1:k])
-                    lamb = (1.0 - lamb) * gamma)
-                    result +=
-"""
-λ_1 = c(x_1 ... x_{n-1}) / (c(x_1 ... x_{n-1}) + gamma)
+    def cond_prob(self, token, prev_tokens=None):
+        """Conditional probability of a token.
 
-λ_2 = (1 - λ_1) c(x_2 ... x_{n-1}) / (c(x_2 ... x_{n-1}) + gamma)
+        token -- the token.
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """
 
-λ_3 = (1 - λ_1 - λ_2) c(x_3 ... x_{n-1}) / (c(x_3 ... x_{n-1}) + gamma)
+        if not prev_tokens:
+            prev_tokens = []
+        result = 0
+        lamb = 0
+        lamb_n = 0
+        for i in range(self.n,0,-1):
+            #N, N-1, .. Unigrama
+            if i == 1:
+                lamb = 1.0 - lamb_n
+            else:
+                count = self.models[i-1].count(tuple(prev_tokens))
+                lamb = (1.0 - lamb) * (count/(count + self.gamma))
+                lamb_n = lamb_n + lamb
+            result += lamb * self.models[i-1].cond_prob(token,prev_tokens)
+            prev_tokens = prev_tokens[1:]
 
-λ_n = (1 - λ_1 - ... - λ_{n-1})
-"""
+        return result
+
+    def count(self, tokens):
+        """Count for an n-gram or (n-1)-gram.
+
+        tokens -- the n-gram or (n-1)-gram tuple.
+        """
+        size = len(tokens)
+        if size == 0: #Para evitar que () se vaya de rango
+            size = 1
+        count = self.models[size-1].counts[tokens]
+
+        return count
 
 
+    def estimate_gamma(self, held_out):
 
-
-
-
-        def estimate_gamma(self, held_out)
-            return gamma
+        #model = AddOneNGram(self.n,held_out)
+        #usar sent_log_prob
+        return 1
