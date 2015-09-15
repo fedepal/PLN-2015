@@ -1,7 +1,7 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
 from math import log2
-
+from random import choice
 
 class NGram(object):
 
@@ -48,6 +48,7 @@ class NGram(object):
         """
         if not prev_tokens:
             prev_tokens = []
+        assert len(prev_tokens) == self.n - 1
         if '</s>' in prev_tokens:
             return 0
 
@@ -126,15 +127,48 @@ class NGramGenerator:
         #python ordena las tuplas,
         #x tiene la probabilidad,palabra key = lambda x: (x[1],x[0]),reverse=True ordenar de mayor a menor
         # key = lambda x:(-x[1],x[0]) decreciente en probabilidad, creciente en palabras.
+        self.probs = probs =defaultdict(dict)
+        self.sorted_probs = sorted_probs = defaultdict(dict)
+        self.n = model.n
+        for k in model.counts.keys():
+            if len(k) == model.n:
+                probs[k[:-1]].update({k[model.n-1]:model.cond_prob(k[model.n-1],list(k[:-1]))})
+
+        for k,v in probs.items():
+            sorted_probs[k] = sorted(v.items(),key=lambda x: (x[1],x[0]),reverse=False)
 
     def generate_sent(self):
         """Randomly generate a sentence."""
+
+        prev_tokens = (self.n-1) * ['<s>']
+        generated = ''
+        sent = []
+        while not generated == '</s>':
+            generated = self.generate_token(prev_tokens)
+            prev_tokens.append(generated)
+            prev_tokens = prev_tokens[1:]
+            sent += [generated]
+        return sent[:-1]
 
     def generate_token(self, prev_tokens=None):
         """Randomly generate a token, given prev_tokens.
 
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
+
+        self.sorted_probs
+
+        if not prev_tokens:
+            prev_tokens = []
+        assert len(prev_tokens) == self.n - 1
+
+
+        words = self.sorted_probs[tuple(prev_tokens)]
+        generated = choice(words)
+        #generated = min(words, key = lambda t: abs(r-t[1]))
+
+        return generated[0]
+
 
 class InterpolatedNGram(NGram):
 
@@ -171,6 +205,7 @@ class InterpolatedNGram(NGram):
 
         if not prev_tokens:
             prev_tokens = []
+        assert len(prev_tokens) == self.n - 1
         result = 0
         lamb = 0
         lamb_n = 0
@@ -181,7 +216,7 @@ class InterpolatedNGram(NGram):
             else:
                 count = self.models[i-1].count(tuple(prev_tokens))
                 lamb = (1.0 - lamb_n) * (count/(count + self.gamma))
-                lamb_n = lamb_n + lamb
+                lamb_n = lamb_n + lamb # VER EL LAMBDA DISTINTO, SE PUEDE SACAR LAMB_N
 
             result += lamb * self.models[i-1].cond_prob(token,prev_tokens)
             prev_tokens = prev_tokens[1:]
@@ -196,13 +231,12 @@ class InterpolatedNGram(NGram):
         size = len(tokens)
         if size == 0: #Para evitar que () se vaya de rango
             size = 1
-        count = self.models[size-1].counts[tokens]
+        count = self.models[size-1].count(tokens)
 
         return count
 
 
     def estimate_gamma(self, held_out):
 
-        #model = AddOneNGram(self.n,held_out)
-        #usar sent_log_prob
+
         return 1
