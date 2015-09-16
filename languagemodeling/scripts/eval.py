@@ -37,13 +37,12 @@ if __name__ == '__main__':
      from math import ceil
      sents = sents[-ceil(0.1*len(sents)):]
 
-     #Perplexity
-
      filename = opts['-i']
      f = open(filename,"rb")
 
      model = pickle.load(f)
 
+     #Perplexity
      log_prob = 0
      num_words = 0
      for sent in sents:

@@ -70,6 +70,9 @@ class NGram(object):
             result = result * self.cond_prob(sent[k],sent[k-n+1:k])
             if result == 0:
                 break
+        for i in range(0,n-1):
+            sent.pop(0)
+        sent.pop()
         return result
 
     def sent_log_prob(self, sent):
@@ -87,6 +90,9 @@ class NGram(object):
                 result = -float('inf')
                 break
             result += log2(c_prob)
+        for i in range(0,n-1):
+            sent.pop(0)
+        sent.pop()
         return result
 
 class AddOneNGram(NGram):
@@ -156,8 +162,6 @@ class NGramGenerator:
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
 
-        self.sorted_probs
-
         if not prev_tokens:
             prev_tokens = []
         assert len(prev_tokens) == self.n - 1
@@ -168,7 +172,6 @@ class NGramGenerator:
         #generated = min(words, key = lambda t: abs(r-t[1]))
 
         return generated[0]
-
 
 class InterpolatedNGram(NGram):
 
@@ -185,7 +188,7 @@ class InterpolatedNGram(NGram):
             from math import ceil
             held_out = sents[-ceil(0.1*len(sents)):]
             sents = sents[:-ceil(0.1*len(sents))]
-            gamma = self.estimate_gamma(held_out)
+            gamma = self.estimate_gamma(sents, held_out, addone)
 
         self.gamma = gamma
         self.models=[]
@@ -236,7 +239,32 @@ class InterpolatedNGram(NGram):
         return count
 
 
-    def estimate_gamma(self, held_out):
+    def estimate_gamma(self, sents, held_out, addone):
 
+        #Minimizar Perplexity
+        values = [1,5,10,30,50,100,150,200,500,1000,1250,1500]
+        values.reverse()
+        n = self.n
+        perpl = 0
+        model = None
+        l_perpl = []
+        for gamma in values:
+            model = InterpolatedNGram(n, sents, gamma, addone)
+            perpl = self.perplexity(model,held_out)
+            l_perpl.append((perpl,gamma))
+        r = min(l_perpl)[1]
+        print (l_perpl)
+        return r
 
-        return 1
+    def perplexity(self,model, sents):
+
+        log_prob = 0
+        num_words = 0
+        for sent in sents:
+            log_prob += model.sent_log_prob(sent)
+            num_words += len(sent)
+
+        cross_entropy = (1.0/num_words)*log_prob
+        perplexity = pow (2,-cross_entropy)
+
+        return perplexity
