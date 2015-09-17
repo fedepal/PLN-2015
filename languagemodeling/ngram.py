@@ -1,7 +1,8 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
 from math import log2
-from random import choice
+from random import random
+from itertools import chain
 
 class NGram(object):
 
@@ -49,13 +50,12 @@ class NGram(object):
         if not prev_tokens:
             prev_tokens = []
         assert len(prev_tokens) == self.n - 1
-        if '</s>' in prev_tokens:
-            return 0
 
         prev_count = self.count(tuple(prev_tokens))
         if prev_count == 0:
             return 0
-        return float(self.count(tuple(prev_tokens+[token]))) / prev_count
+
+        return float(self.count(tuple(prev_tokens+[token]))) / self.count(tuple(prev_tokens))
 
     def sent_prob(self, sent):
         """Probability of a sentence. Warning: subject to underflow problems.
@@ -95,6 +95,29 @@ class NGram(object):
         sent.pop()
         return result
 
+    def log_probability(self, sents):
+        log_prob = 0
+        for sent in sents:
+            log_prob += self.sent_log_prob(sent)
+
+        return log_prob
+
+    def cross_entropy(self, sents):
+
+        log_prob = self.log_probability(sents)
+
+        num_words = len(list(chain.from_iterable(sents))) + len(sents) # (+ #</s>)
+
+        return (1.0/num_words)*log_prob
+
+    def perplexity(self,sents):
+
+        cross_entropy = self.cross_entropy(sents)
+
+        perplexity = pow (2,-cross_entropy)
+
+        return perplexity
+
 class AddOneNGram(NGram):
 
     def __init__(self, n, sents):
@@ -106,7 +129,6 @@ class AddOneNGram(NGram):
         super().__init__(n,sents)
 
         #Vocabulary Size
-        from itertools import chain
         self.v = len(set(list(chain.from_iterable(sents)))) + 1
 
     def cond_prob(self, token, prev_tokens=None):
@@ -130,9 +152,7 @@ class NGramGenerator:
         """
         model -- n-gram model.
         """
-        #python ordena las tuplas,
-        #x tiene la probabilidad,palabra key = lambda x: (x[1],x[0]),reverse=True ordenar de mayor a menor
-        # key = lambda x:(-x[1],x[0]) decreciente en probabilidad, creciente en palabras.
+
         self.probs = probs =defaultdict(dict)
         self.sorted_probs = sorted_probs = defaultdict(dict)
         self.n = model.n
@@ -141,7 +161,7 @@ class NGramGenerator:
                 probs[k[:-1]].update({k[model.n-1]:model.cond_prob(k[model.n-1],list(k[:-1]))})
 
         for k,v in probs.items():
-            sorted_probs[k] = sorted(v.items(),key=lambda x: (x[1],x[0]),reverse=False)
+            sorted_probs[k] = sorted(v.items(),key=lambda x: (x[1],x[0]),reverse=True)
 
     def generate_sent(self):
         """Randomly generate a sentence."""
@@ -166,12 +186,18 @@ class NGramGenerator:
             prev_tokens = []
         assert len(prev_tokens) == self.n - 1
 
-
         words = self.sorted_probs[tuple(prev_tokens)]
-        generated = choice(words)
-        #generated = min(words, key = lambda t: abs(r-t[1]))
+        print(words)
+        i=0
+        accum = words [0][1]
+        r = random()
 
-        return generated[0]
+        while r > accum:
+            i += 1
+            accum += words[i][1]
+        assert(r <= accum)
+        return words[i][0]
+
 
 class InterpolatedNGram(NGram):
 
@@ -185,19 +211,21 @@ class InterpolatedNGram(NGram):
         """
         self.n = n
         if not gamma:
-            from math import ceil
-            held_out = sents[-ceil(0.1*len(sents)):]
-            sents = sents[:-ceil(0.1*len(sents))]
+            held_out = sents[int(0.9*len(sents)):]
+            sents = sents[:int(0.9*len(sents))]
             gamma = self.estimate_gamma(sents, held_out, addone)
 
         self.gamma = gamma
         self.models=[]
+
         if addone:
-            for i in range(1,n+1):
-                self.models.append(AddOneNGram(i,sents))
+            self.models.append(AddOneNGram(1,sents))
         else:
-            for i in range(1,n+1):
-                self.models.append(NGram(i,sents))
+            self.models.append(NGram(1,sents))
+        for i in range(2,n+1):
+            self.models.append(NGram(i,sents))
+
+        self.counts = self.models[n-1].counts
 
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
@@ -238,11 +266,11 @@ class InterpolatedNGram(NGram):
 
         return count
 
-
     def estimate_gamma(self, sents, held_out, addone):
 
         #Minimizar Perplexity
-        values = [1,5,10,30,50,100,150,200,500,1000,1250,1500]
+
+        values = [i*100 for i in range(8,13)]
         values.reverse()
         n = self.n
         perpl = 0
@@ -250,21 +278,43 @@ class InterpolatedNGram(NGram):
         l_perpl = []
         for gamma in values:
             model = InterpolatedNGram(n, sents, gamma, addone)
-            perpl = self.perplexity(model,held_out)
+            perpl = model.perplexity(held_out)
             l_perpl.append((perpl,gamma))
         r = min(l_perpl)[1]
-        print (l_perpl)
+
         return r
 
-    def perplexity(self,model, sents):
+class BackOffNGram:
 
-        log_prob = 0
-        num_words = 0
-        for sent in sents:
-            log_prob += model.sent_log_prob(sent)
-            num_words += len(sent)
+    def __init__(self, n, sents, beta=None, addone=True):
+        """
+        Back-off NGram model with discounting as described by Michael Collins.
 
-        cross_entropy = (1.0/num_words)*log_prob
-        perplexity = pow (2,-cross_entropy)
+        n -- order of the model.
+        sents -- list of sentences, each one being a list of tokens.
+        beta -- discounting hyper-parameter (if not given, estimate using
+            held-out data).
+        addone -- whether to use addone smoothing (default: True).
+        """
 
-        return perplexity
+    """
+       Todos los métodos de NGram.
+    """
+
+    def A(self, tokens):
+        """Set of words with counts > 0 for a k-gram with 0 < k < n.
+
+        tokens -- the k-gram tuple.
+        """
+
+    def alpha(self, tokens):
+        """Missing probability mass for a k-gram with 0 < k < n.
+
+        tokens -- the k-gram tuple.
+        """
+
+    def denom(self, tokens):
+        """Normalization factor for a k-gram with 0 < k < n.
+
+        tokens -- the k-gram tuple.
+        """

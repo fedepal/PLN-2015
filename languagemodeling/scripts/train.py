@@ -42,8 +42,7 @@ if __name__ == '__main__':
                                 sent_tokenizer=LazyLoader('tokenizers/punkt/spanish.pickle')).sents()
 
     #slice data 90% train data
-    from math import ceil
-    sents = sents[:-ceil(0.1*len(sents))]
+    sents = sents[:int(0.9*len(sents))]
 
     # train the model
     n = int(opts['-n'])

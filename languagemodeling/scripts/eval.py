@@ -34,22 +34,18 @@ if __name__ == '__main__':
                                  sent_tokenizer=LazyLoader('tokenizers/punkt/spanish.pickle')).sents()
 
      #Slice data 10% test data
-     from math import ceil
-     sents = sents[-ceil(0.1*len(sents)):]
+
+     sents = sents[int(0.9*len(sents)):]
 
      filename = opts['-i']
      f = open(filename,"rb")
 
      model = pickle.load(f)
 
-     #Perplexity
-     log_prob = 0
-     num_words = 0
-     for sent in sents:
-         log_prob += model.sent_log_prob(sent)
-         num_words += len(sent)
+     l_prob = model.log_prob(sents)
+     c_entr = model.cross_entropy(sents)
+     perl = model.perplexity(sents)
 
-     cross_entropy = (1.0/num_words)*log_prob
-     perplexity = pow (2,-cross_entropy)
-
-     print ("Perplexity: ", perplexity)
+    print("Log Probability: ", log_prob)
+    print("Cross Entropy: ", c_entr)
+    print("Perplexity: ", perplexity)
