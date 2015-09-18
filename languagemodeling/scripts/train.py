@@ -38,7 +38,7 @@ if __name__ == '__main__':
     tokenizer = RegexpTokenizer(pattern)
 
     # load the data
-    sents = PlaintextCorpusReader('../../corpus','.*\.txt',word_tokenizer=tokenizer,
+    sents = PlaintextCorpusReader('../corpus','.*\.txt',word_tokenizer=tokenizer,
                                 sent_tokenizer=LazyLoader('tokenizers/punkt/spanish.pickle')).sents()
 
     #slice data 90% train data
