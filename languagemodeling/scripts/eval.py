@@ -30,21 +30,21 @@ if __name__ == '__main__':
 
     # load the data
     lazyloader = LazyLoader('tokenizers/punkt/spanish.pickle')
-    sents = PlaintextCorpusReader('../../corpus', '.*\.txt', word_tokenizer=tokenizer,
+    sents = PlaintextCorpusReader('../corpus', '.*\.txt', word_tokenizer=tokenizer,
                                   sent_tokenizer=lazyloader).sents()
 
     # Slice data 10% test data
 
-    sents = sents[int(0.9*len(sents)):]
+    held_out = sents[int(0.9*len(sents)):]
 
     filename = opts['-i']
     f = open(filename, "rb")
 
     model = pickle.load(f)
 
-    l_prob = model.log_prob(sents)
-    c_entr = model.cross_entropy(sents)
-    perpl = model.perplexity(sents)
+    l_prob = model.log_probability(held_out)
+    c_entr = model.cross_entropy(held_out)
+    perpl = model.perplexity(held_out)
 
     print("Log Probability: ", l_prob)
     print("Cross Entropy: ", c_entr)

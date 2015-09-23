@@ -1,7 +1,7 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> [-m <model>] [-g <gamma>] [--addone] -o <file>
+  train.py -n <n> [-m <model>] [-g <gamma>] [-b <beta>] [--addone] -o <file>
   train.py -h | --help
 
 Options:
@@ -10,8 +10,10 @@ Options:
                   ngram: Unsmoothed n-grams.
                   addone: N-grams with add-one smoothing.
                   inter: N-gramas with interpolation.
+                  backoff: N-gramas with back-off and discounting.
   -g <gamma>    Gamma value for Interpolation.
   --addone      Use addone for Interpolation
+  -b <beta>     Beta value for Back-off
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
@@ -21,7 +23,7 @@ import pickle
 from nltk import RegexpTokenizer
 from nltk.corpus import PlaintextCorpusReader
 from nltk.data import LazyLoader
-from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram
+from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram, BackOffNGram
 
 
 if __name__ == '__main__':
@@ -57,7 +59,13 @@ if __name__ == '__main__':
         addone = opts['--addone']
         float(gamma) if gamma is not None else None
         model = InterpolatedNGram(n, sents, gamma, addone)
+    elif m == "backoff":
+        beta = opts['-b']
+        if beta is not None:
+            beta = float(beta)
+        addone = opts['--addone']
 
+        model = BackOffNGram(n,sents,beta,addone)
     else:
         print(__doc__)
         exit(0)
