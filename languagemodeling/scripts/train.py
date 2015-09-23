@@ -11,7 +11,7 @@ Options:
                   addone: N-grams with add-one smoothing.
                   inter: N-gramas with interpolation.
   -g <gamma>    Gamma value for Interpolation.
-  --addone     Use addone for Interpolation
+  --addone      Use addone for Interpolation
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
@@ -22,7 +22,7 @@ from nltk import RegexpTokenizer
 from nltk.corpus import PlaintextCorpusReader
 from nltk.data import LazyLoader
 from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram
-import os.path
+
 
 if __name__ == '__main__':
     opts = docopt(__doc__)
@@ -36,12 +36,12 @@ if __name__ == '__main__':
             | [][.,;"'?():-_`]  # these are separate tokens; includes ],
             '''
     tokenizer = RegexpTokenizer(pattern)
-
+    lazyloader = LazyLoader('tokenizers/punkt/spanish.pickle')
     # load the data
-    sents = PlaintextCorpusReader('../corpus','.*\.txt',word_tokenizer=tokenizer,
-                                sent_tokenizer=LazyLoader('tokenizers/punkt/spanish.pickle')).sents()
+    sents = PlaintextCorpusReader('../corpus', '.*\.txt', word_tokenizer=tokenizer,
+                                  sent_tokenizer=lazyloader).sents()
 
-    #slice data 90% train data
+    # slice data 90% train data
     sents = sents[:int(0.9*len(sents))]
 
     # train the model

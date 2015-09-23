@@ -4,6 +4,7 @@ from math import log2
 from random import random
 from itertools import chain
 
+
 class NGram(object):
 
     def __init__(self, n, sents):
@@ -21,7 +22,7 @@ class NGram(object):
                 ngram = tuple(sent[i: i + n])
                 counts[ngram] += 1
                 counts[ngram[:-1]] += 1
-            for i in range(0,n-1):
+            for i in range(0, n-1):
                 sent.pop(0)
             sent.pop()
 
@@ -32,7 +33,8 @@ class NGram(object):
         assert len(prev_tokens) == n - 1
 
         tokens = prev_tokens + [token]
-        return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
+        tokens = tuple(tokens)
+        return float(self.counts[tokens]) / self.counts[tuple(prev_tokens)]
 
     def count(self, tokens):
         """Count for an n-gram or (n-1)-gram.
@@ -66,11 +68,11 @@ class NGram(object):
         sent[0:0] += (n-1) * ['<s>']
         sent.append('</s>')
         result = 1
-        for k in range(n-1,len(sent)):
-            result = result * self.cond_prob(sent[k],sent[k-n+1:k])
+        for k in range(n-1, len(sent)):
+            result = result * self.cond_prob(sent[k], sent[k-n+1:k])
             if result == 0:
                 break
-        for i in range(0,n-1):
+        for i in range(0, n-1):
             sent.pop(0)
         sent.pop()
         return result
@@ -84,13 +86,13 @@ class NGram(object):
         sent[0:0] += (n-1) * ['<s>']
         sent.append('</s>')
         result = 0
-        for k in range(n-1,len(sent)):
-            c_prob = self.cond_prob(sent[k],sent[k-n+1:k])
+        for k in range(n-1, len(sent)):
+            c_prob = self.cond_prob(sent[k], sent[k-n+1:k])
             if c_prob == 0:
                 result = -float('inf')
                 break
             result += log2(c_prob)
-        for i in range(0,n-1):
+        for i in range(0, n-1):
             sent.pop(0)
         sent.pop()
         return result
@@ -99,24 +101,24 @@ class NGram(object):
         log_prob = 0
         for sent in sents:
             log_prob += self.sent_log_prob(sent)
-
         return log_prob
 
     def cross_entropy(self, sents):
 
         log_prob = self.log_probability(sents)
 
-        num_words = len(list(chain.from_iterable(sents))) + len(sents) # (+ #</s>)
+        num_words = len(list(chain.from_iterable(sents))) + len(sents) # (+ # </s>)
 
         return (1.0/num_words)*log_prob
 
-    def perplexity(self,sents):
+    def perplexity(self, sents):
 
         cross_entropy = self.cross_entropy(sents)
 
-        perplexity = pow (2,-cross_entropy)
+        perplexity = pow (2, -cross_entropy)
 
         return perplexity
+
 
 class AddOneNGram(NGram):
 
@@ -126,9 +128,9 @@ class AddOneNGram(NGram):
         sents -- list of sentences, each one being a list of tokens.
         """
 
-        super().__init__(n,sents)
+        super().__init__(n, sents)
 
-        #Vocabulary Size
+        # Vocabulary Size
         self.v = len(set(list(chain.from_iterable(sents)))) + 1
 
     def cond_prob(self, token, prev_tokens=None):
@@ -158,10 +160,11 @@ class NGramGenerator:
         self.n = model.n
         for k in model.counts.keys():
             if len(k) == model.n:
-                probs[k[:-1]].update({k[model.n-1]:model.cond_prob(k[model.n-1],list(k[:-1]))})
+                # probs[k[:-1]].update({k[model.n-1]:model.cond_prob(k[model.n-1], list(k[:-1]))})
+                probs[k[:-1]][k[model.n-1]] = model.cond_prob(k[model.n-1], list(k[:-1]))
 
-        for k,v in probs.items():
-            sorted_probs[k] = sorted(v.items(),key=lambda x: (x[1],x[0]),reverse=True)
+        for k, v in probs.items():
+            sorted_probs[k] = sorted(v.items(), key=lambda x: (x[1],x[0]), reverse=True)
 
     def generate_sent(self):
         """Randomly generate a sentence."""
@@ -187,7 +190,7 @@ class NGramGenerator:
         assert len(prev_tokens) == self.n - 1
 
         words = self.sorted_probs[tuple(prev_tokens)]
-        print(words)
+
         i=0
         accum = words [0][1]
         r = random()
@@ -219,11 +222,11 @@ class InterpolatedNGram(NGram):
         self.models=[]
 
         if addone:
-            self.models.append(AddOneNGram(1,sents))
+            self.models.append(AddOneNGram(1, sents))
         else:
-            self.models.append(NGram(1,sents))
-        for i in range(2,n+1):
-            self.models.append(NGram(i,sents))
+            self.models.append(NGram(1, sents))
+        for i in range(2, n+1):
+            self.models.append(NGram(i, sents))
 
         self.counts = self.models[n-1].counts
 
@@ -240,8 +243,8 @@ class InterpolatedNGram(NGram):
         result = 0
         lamb = 0
         lamb_n = 0
-        for i in range(self.n,0,-1):
-            #N, N-1, .. Unigrama
+        for i in range(self.n, 0, -1):
+            # N, N-1, .. Unigrama
             if i == 1:
                 lamb = 1.0 - lamb_n
             else:
@@ -249,7 +252,7 @@ class InterpolatedNGram(NGram):
                 lamb = (1.0 - lamb_n) * (count/(count + self.gamma))
                 lamb_n = lamb_n + lamb # VER EL LAMBDA DISTINTO, SE PUEDE SACAR LAMB_N
 
-            result += lamb * self.models[i-1].cond_prob(token,prev_tokens)
+            result += lamb * self.models[i-1].cond_prob(token, prev_tokens)
             prev_tokens = prev_tokens[1:]
 
         return result
@@ -260,7 +263,7 @@ class InterpolatedNGram(NGram):
         tokens -- the n-gram or (n-1)-gram tuple.
         """
         size = len(tokens)
-        if size == 0: #Para evitar que () se vaya de rango
+        if size == 0: # Para evitar que () se vaya de rango
             size = 1
         count = self.models[size-1].count(tokens)
 
@@ -268,23 +271,24 @@ class InterpolatedNGram(NGram):
 
     def estimate_gamma(self, sents, held_out, addone):
 
-        #Minimizar Perplexity
+        # Minimizar Perplexity
 
-        values = [i*100 for i in range(8,13)]
+        values = [i*100 for i in range(8, 13)]
         values.reverse()
         n = self.n
         perpl = 0
         model = None
         l_perpl = []
         for gamma in values:
-            model = InterpolatedNGram(n, sents, gamma, addone)
+            model = InterpolatedNGram(n, sents, gamma, addone) # Los counts son lo mismos, se podría obviar el calculo.
             perpl = model.perplexity(held_out)
-            l_perpl.append((perpl,gamma))
+            l_perpl.append((perpl, gamma))
         r = min(l_perpl)[1]
 
         return r
 
-class BackOffNGram:
+
+class BackOffNGram(NGram):
 
     def __init__(self, n, sents, beta=None, addone=True):
         """
@@ -297,15 +301,108 @@ class BackOffNGram:
         addone -- whether to use addone smoothing (default: True).
         """
 
-    """
-       Todos los métodos de NGram.
-    """
+
+        assert n > 0
+        self.n = n
+        self.counts = counts = defaultdict(int)
+        self.beta = beta
+        self.addone = addone
+        if beta == None:
+            held_out = sents[int(0.9*len(sents)):]
+            sents = sents[:int(0.9*len(sents))]
+
+        if addone:
+            self.v = len(set(list(chain.from_iterable(sents)))) + 1
+
+        for sent in sents:
+            sent[0:0] += (n-1) * ['<s>']
+            sent.append('</s>')
+            for i in range(len(sent) - n + 1):
+                ngram = tuple(sent[i: i + n])
+                counts[ngram]+= 1
+                for j in range(1, n+1):
+                    counts[ngram[j:]] += 1
+            for i in range(0, n-1):
+                sent.pop(0)
+            sent.pop()
+
+        len_sents = len(sents)
+        for i in range(1, n): # (len_sents= 2) bigrama -> <s>:2 | trigrama <s>:4 <s><s>:2 | 4grama <s>:6 <s><s>:4 <s><s><s>:2|
+            counts[i*('<s>', )] = (n-i) * len_sents
+
+        # Discounting beta/Falta estimar beta
+        if self.beta == None:
+            self.beta = self.estimate_beta(held_out)
+
+        self.counts_beta = counts_beta = defaultdict(float)
+        for k, v in counts.items():
+            counts_beta[k] = v - self.beta
+
+        self.denom_dict = defaultdict(float)
+        self.alpha_dict = defaultdict(float)
+        # self.compute_alpha()
+        self.compute_denom()
+
+
+    def cond_prob(self, token, prev_tokens=None):
+        """Conditional probability of a token.
+
+        token -- the token.
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """
+        result = 0
+        if not prev_tokens:
+            if not self.addone:
+                result = self.count((token, ))/self.count(tuple())
+            else:
+                result = (self.count((token, )) + 1)/(self.count(tuple()) + self.v)
+        else:
+            prev_tokens = tuple(prev_tokens)
+            if token in self.A(prev_tokens):
+                result = self.counts_beta[prev_tokens+(token, )] / self.count(prev_tokens)
+            else:
+                alpha = self.alpha(prev_tokens)
+                if alpha == 0:
+                    result = 0
+                else:
+                    result = alpha * self.cond_prob(token, list(prev_tokens[1:])) / self.denom(prev_tokens)
+
+        return result
+
+    # def compute_alpha(self):
+    #
+    #     for k in self.counts.keys():
+    #         # Calcular el alpha por ej: P(w|v) -> alpha(v). Calculo para prev_tokens
+    #         # self.alpha_dict[k[:-1]] = (self.beta * len(self.A(k[:-1]))) / self.count(k[:-1])
+    #         self.alpha_dict[k[:-1]] = 1.0 - sum(self.counts_beta[k[:-1] + (w, )]/self.counts[k[:-1]] for w in self.A(k[:-1]))
+
+    def compute_denom(self):
+
+        if not self.addone:
+            for ngram in self.counts.keys():
+                if len(ngram) == 1:
+                    self.denom_dict[ngram] = 1.0 - sum(self.counts[k, ]/self.counts[()] for k in self.A(ngram))
+        else:
+            for ngram in self.counts.keys():
+                if len(ngram) == 1:
+                    self.denom_dict[ngram] = 1.0 - sum((self.counts[k, ]+1)/(self.counts[()]+self.v) for k in self.A(ngram))
+        for ngram in self.counts.keys():
+            if len(ngram) > 1:
+                self.denom_dict[ngram] = 1.0 - sum(self.cond_prob(k, list(ngram[1:])) for k in self.A(ngram))
+
 
     def A(self, tokens):
         """Set of words with counts > 0 for a k-gram with 0 < k < n.
 
         tokens -- the k-gram tuple.
         """
+        if len(tokens) == 0:
+            return set([])
+        a = []
+        for k in self.counts.keys():
+            if k[:-1] == tokens:
+                a.append(k[-1:][0]) # La ultima parte de la tupla y solo la palabra de la tupla
+        return set(a)
 
     def alpha(self, tokens):
         """Missing probability mass for a k-gram with 0 < k < n.
@@ -313,8 +410,39 @@ class BackOffNGram:
         tokens -- the k-gram tuple.
         """
 
+        result = 1.0 - sum(self.counts_beta[tokens + (w, )]/self.counts[tokens] for w in self.A(tokens))
+
+        return result
+
     def denom(self, tokens):
         """Normalization factor for a k-gram with 0 < k < n.
 
         tokens -- the k-gram tuple.
         """
+        if self.A(tokens) == set():
+            return 1.0
+
+        return self.denom_dict[tokens]
+
+    def estimate_beta(self, held_out):
+
+        l_perpl = []
+
+        for b in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99]:
+            self.counts_beta = counts_beta = defaultdict(float)
+            for k, v in self.counts.items():
+                counts_beta[k] = v - b
+
+            self.beta = b
+            self.denom_dict = defaultdict(float)
+            self.alpha_dict = defaultdict(float)
+            # self.compute_alpha()
+            self.compute_denom()
+            perpl = self.perplexity(held_out)
+
+            l_perpl.append((perpl, b))
+            self.beta = None
+
+        beta = min(l_perpl)[1]
+        print("Beta:", beta)
+        return beta
