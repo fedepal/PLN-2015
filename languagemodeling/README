@@ -1,8 +1,71 @@
 README - Práctico 1 - PLN
 
-Ejercicio 7
-
+Tabla
             |   1   |   2   |   3   |   4   |
 add-one     |  1075 |  4301 | 25614 | 39291 |
-Interpolated|  1075 |  462  |  451  |  458  |
+Interpolated|  1075 |  462  |  451  |  458  | (gamma = 1000)
 Back-off    |  1072 |  397  |  393  |  400  |
+betas:      |  0.1  |  0.7  |  0.8  |  0.8  |
+
+
+Ejercicio 3
+
+Unigramas:
+*la conmigo era más de Tres Maga tiempo , engañado me siguiente que el le
+curioso la Ramos alcanzaba el acto sueño tuviera , subirla en dos de la así
+su aparte en poder día tenía el , en , con No mambos sonreír foto cubría
+conspirador que como amantes pegan abajo , grande sentándose DE mucha mi
+porque a qué cubriendo botella , atacarlo de métro un y retroceder
+inexplicablemente ahora , burgués inspección , ?
+
+*que es ringside día a , irse me da el era 600 daño estado un Señor Pobre
+otra lo ocho . hacer siquiera con ,
+
+*pero Probablemente escribiendo pero el de fin con hombre
+
+*juegan . que En hora luego se más que , cómplices infinitamente
+
+Bigramas:
+
+*Laurent y ver los reproches nada que el público en su forma .
+
+*Cuatro centímetros a Oliveira , la ley , las esperanzas siempre alguien .
+
+*Pues es más en su rincón que empieza por favor , porque no ser un sueño .
+
+*El eje , si escribo , simétricamente con mis tus pantorrillas y a la sábana
+seguía presente y los momentos el último rincón dijo Gekrepten , Roma en o
+espumajeantes embajadores , simplemente esperando .
+
+Trigramas:
+
+*Escucharon otro disco comiendo bizcochos y bebiendo más whisky )
+que merecía ... Chile será en el comedor para el gatillo pero
+mierdosos como un cortejo la silla , sujetó a Lucio .
+
+*En los días pasaron sin que cesara el embotellamiento era una
+admisión de miedo y pasara de la pareja retrocedía hacia la
+esquina el próximo movimiento .
+
+*Yo no cuento para nada , había algo , que se decreta comunista porque el
+libro se puede pretender que tus diplomas alcancen para tanto dijo la señora
+Matilde , me pregunto cómo es el mar parecía ...
+
+*Harold Haroldson cuando recibiera la segura y es que supo algo del
+hotel parecía coagularse , pero así y que veía en la materia inanimada ,
+de la soledad con una mezcla de temor y desconfianza .
+
+Cuatrigramas:
+
+*Como el período del gigantismo en Picasso , si quieres , y sentir cómo aquello
+que en una de las experiencias de un misionero en Indonesia .
+
+*Es mucho mejor que yo este viaje insensato pensó Claudia , mirándose las uñas
+es que a Luis no le gustara Copenhague , solamente un poco absurdo eso de viajar
+en plena lluvia y semanas y mochila para lo más probablemente descubrir que
+los regulares atacaban en cambio una mala paja .
+
+*Por consejo de Luis terminaron aceptando hormigas negras solamente ,
+y el núcleo se formó a partir de tanta falsa premisa .
+
+*Tenemos tabaco para un rato y nadie sabrá nada .
