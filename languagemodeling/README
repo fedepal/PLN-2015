@@ -7,8 +7,38 @@ Interpolated|  1075 |  462  |  451  |  458  | (gamma = 1000)
 Back-off    |  1072 |  397  |  393  |  400  |
 betas:      |  0.1  |  0.7  |  0.8  |  0.8  |
 
+Ejercicio 1
+Se modifica train.py para cargar el corpus elegido, son varios archivos
+convertidos a texto desde pdf. Se utiliza un tokenizer con expresiones
+regulares para solucionar algunos problemas de tokenización.
+Y se utiliza tambíen spanish.pickle
+Se utiliza solo el 90% del corpus cargado
+
+
+Ejercicio 2
+Al conteo de n-gramas y n-1-gramas ya dado, se agrego al principio de cada
+oración los (n-1) <s> que corresponden y el </s> al final.
+Aplicando la formula de ML se calcula la probabilidad condicional.
+Para calcular la probabilidad de una oración, se multiplica la probabilidad
+condicional de cada ngrama en la oración, pero esto puede dar un underflow
+por lo que se utiliza log2.
+Se agregan metodos para calcular Log-probability, cross-entropy y perplexity
+pues los demás modelos heredan de esta clase NGram.
+
+
 
 Ejercicio 3
+Se calculan las probabilidades de las palabras que pueden seguir a una palabra
+y se las guarda ordenadas de mayor a menor de acuerdo a la probabilidad.
+
+Se cambio el test que verifica que sorted_probs este ordenado, pero en algunos
+casos falla test_init_2gram (test_ngram_generator.TestNGramGenerator), porque
+quiere comparar los diccionarios y ocurren diferencias como esta:
+-  ('el',): [('gato', 0.5), ('</s>', 0.5)],
++  ('el',): [('</s>', 0.5), ('gato', 0.5)],
+y hay veces en que pasa el test.
+
+Texto generado:
 
 Unigramas:
 *la conmigo era más de Tres Maga tiempo , engañado me siguiente que el le
@@ -69,3 +99,29 @@ los regulares atacaban en cambio una mala paja .
 y el núcleo se formó a partir de tanta falsa premisa .
 
 *Tenemos tabaco para un rato y nadie sabrá nada .
+
+Ejercicio 4
+Hereda la mayoria de metodos de NGram, se agrega en el init el cálculo del
+tamaño del vocabulario. Se implemento pasando de listas de listas a listas, y
+luego a set, y calculando el len.
+
+Ejercicio 5
+Se carga el modelo previamente entrenado con pickle, se carga todo el corpus y
+se utiliza solo el ultimo 10%.
+
+Ejercicio 6
+Se crea un diccionario de modelos de NGramas, de tamaño entre 1..n, si el
+gamma no esta definido se lo estima.
+Esto se podría implementar en lugar de crear n modelos contar directamente
+todos los casos de k-gramas como en el ejercicio de BackOff.
+
+Ejercicio 7
+En este ejercicio hay varias lineas >80, no encuentro manera de dividir las
+lineas que tengan una division(/) intente usando \ pero no lo pude hacer
+funcionar
+
+Se cuenta la cantidad de k-gramas con k entre 1..n.
+Si addone=True calculo el tamaño del Vocabulario y precalculo A, alpha y
+el denominador normalizador.
+En el caso de n=4 llega a consumir 1GB de memoria pero el tamaño del modelo
+entrenado no supera los 170MB
