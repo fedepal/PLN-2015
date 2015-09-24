@@ -1,6 +1,8 @@
 README - Práctico 1 - PLN
+=========================
 
 Tabla
+-----
             |   1   |   2   |   3   |   4   |
 add-one     |  1075 |  4301 | 25614 | 39291 |
 Interpolated|  1075 |  462  |  451  |  458  | (gamma = 1000)
@@ -8,6 +10,7 @@ Back-off    |  1072 |  397  |  393  |  400  |
 betas:      |  0.1  |  0.7  |  0.8  |  0.8  |
 
 Ejercicio 1
+-----------
 Se modifica train.py para cargar el corpus elegido, son varios archivos
 convertidos a texto desde pdf. Se utiliza un tokenizer con expresiones
 regulares para solucionar algunos problemas de tokenización.
@@ -16,6 +19,7 @@ Se utiliza solo el 90% del corpus cargado
 
 
 Ejercicio 2
+-----------
 Al conteo de n-gramas y n-1-gramas ya dado, se agrego al principio de cada
 oración los (n-1) <s> que corresponden y el </s> al final.
 Aplicando la formula de ML se calcula la probabilidad condicional.
@@ -25,9 +29,8 @@ por lo que se utiliza log2.
 Se agregan metodos para calcular Log-probability, cross-entropy y perplexity
 pues los demás modelos heredan de esta clase NGram.
 
-
-
 Ejercicio 3
+-----------
 Se calculan las probabilidades de las palabras que pueden seguir a una palabra
 y se las guarda ordenadas de mayor a menor de acuerdo a la probabilidad.
 
@@ -39,83 +42,92 @@ quiere comparar los diccionarios y ocurren diferencias como esta:
 y hay veces en que pasa el test.
 
 Texto generado:
+---------------
 
 Unigramas:
-*la conmigo era más de Tres Maga tiempo , engañado me siguiente que el le
+----------
+-la conmigo era más de Tres Maga tiempo , engañado me siguiente que el le
 curioso la Ramos alcanzaba el acto sueño tuviera , subirla en dos de la así
 su aparte en poder día tenía el , en , con No mambos sonreír foto cubría
 conspirador que como amantes pegan abajo , grande sentándose DE mucha mi
 porque a qué cubriendo botella , atacarlo de métro un y retroceder
 inexplicablemente ahora , burgués inspección , ?
 
-*que es ringside día a , irse me da el era 600 daño estado un Señor Pobre
+-que es ringside día a , irse me da el era 600 daño estado un Señor Pobre
 otra lo ocho . hacer siquiera con ,
 
-*pero Probablemente escribiendo pero el de fin con hombre
+-pero Probablemente escribiendo pero el de fin con hombre
 
-*juegan . que En hora luego se más que , cómplices infinitamente
+-juegan . que En hora luego se más que , cómplices infinitamente
 
 Bigramas:
+---------
 
-*Laurent y ver los reproches nada que el público en su forma .
+-Laurent y ver los reproches nada que el público en su forma .
 
-*Cuatro centímetros a Oliveira , la ley , las esperanzas siempre alguien .
+-Cuatro centímetros a Oliveira , la ley , las esperanzas siempre alguien .
 
-*Pues es más en su rincón que empieza por favor , porque no ser un sueño .
+-Pues es más en su rincón que empieza por favor , porque no ser un sueño .
 
-*El eje , si escribo , simétricamente con mis tus pantorrillas y a la sábana
+-El eje , si escribo , simétricamente con mis tus pantorrillas y a la sábana
 seguía presente y los momentos el último rincón dijo Gekrepten , Roma en o
 espumajeantes embajadores , simplemente esperando .
 
 Trigramas:
+----------
 
-*Escucharon otro disco comiendo bizcochos y bebiendo más whisky )
+-Escucharon otro disco comiendo bizcochos y bebiendo más whisky )
 que merecía ... Chile será en el comedor para el gatillo pero
 mierdosos como un cortejo la silla , sujetó a Lucio .
 
-*En los días pasaron sin que cesara el embotellamiento era una
+-En los días pasaron sin que cesara el embotellamiento era una
 admisión de miedo y pasara de la pareja retrocedía hacia la
 esquina el próximo movimiento .
 
-*Yo no cuento para nada , había algo , que se decreta comunista porque el
+-Yo no cuento para nada , había algo , que se decreta comunista porque el
 libro se puede pretender que tus diplomas alcancen para tanto dijo la señora
 Matilde , me pregunto cómo es el mar parecía ...
 
-*Harold Haroldson cuando recibiera la segura y es que supo algo del
+-Harold Haroldson cuando recibiera la segura y es que supo algo del
 hotel parecía coagularse , pero así y que veía en la materia inanimada ,
 de la soledad con una mezcla de temor y desconfianza .
 
 Cuatrigramas:
+-------------
 
-*Como el período del gigantismo en Picasso , si quieres , y sentir cómo aquello
+-Como el período del gigantismo en Picasso , si quieres , y sentir cómo aquello
 que en una de las experiencias de un misionero en Indonesia .
 
-*Es mucho mejor que yo este viaje insensato pensó Claudia , mirándose las uñas
+-Es mucho mejor que yo este viaje insensato pensó Claudia , mirándose las uñas
 es que a Luis no le gustara Copenhague , solamente un poco absurdo eso de viajar
 en plena lluvia y semanas y mochila para lo más probablemente descubrir que
 los regulares atacaban en cambio una mala paja .
 
-*Por consejo de Luis terminaron aceptando hormigas negras solamente ,
+-Por consejo de Luis terminaron aceptando hormigas negras solamente ,
 y el núcleo se formó a partir de tanta falsa premisa .
 
-*Tenemos tabaco para un rato y nadie sabrá nada .
+-Tenemos tabaco para un rato y nadie sabrá nada .
 
 Ejercicio 4
+-----------
 Hereda la mayoria de metodos de NGram, se agrega en el init el cálculo del
 tamaño del vocabulario. Se implemento pasando de listas de listas a listas, y
 luego a set, y calculando el len.
 
 Ejercicio 5
+-----------
 Se carga el modelo previamente entrenado con pickle, se carga todo el corpus y
 se utiliza solo el ultimo 10%.
 
 Ejercicio 6
+-----------
 Se crea un diccionario de modelos de NGramas, de tamaño entre 1..n, si el
 gamma no esta definido se lo estima.
 Esto se podría implementar en lugar de crear n modelos contar directamente
 todos los casos de k-gramas como en el ejercicio de BackOff.
 
 Ejercicio 7
+-----------
 En este ejercicio hay varias lineas >80, no encuentro manera de dividir las
 lineas que tengan una division(/) intente usando \ pero no lo pude hacer
 funcionar
