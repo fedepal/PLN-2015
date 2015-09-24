@@ -12,6 +12,7 @@ class NGram(object):
         n -- order of the model.
         sents -- list of sentences, each one being a list of tokens.
         """
+        print("Modelo de ngramas con n =",n)
         assert n > 0
         self.n = n
         self.counts = counts = defaultdict(int)
@@ -146,7 +147,7 @@ class AddOneNGram(NGram):
         """
         # Los counts son iguales que en NGram
         super().__init__(n, sents)
-
+        print("Suavizado AddOne")
         # Vocabulary Size
         self.v = len(set(list(chain.from_iterable(sents)))) + 1
 
@@ -237,18 +238,21 @@ class InterpolatedNGram(NGram):
             held-out data).
         addone -- whether to use addone smoothing (default: True).
         """
+        print("Modelo de ngramas con n =",n,
+              "con suavizado por interpolación con gamma =",gamma)
+
 
         self.n = n
         if gamma is None:
             # Si no hay gamma partimos los sents (90 train , 10 held-out)
             held_out = sents[int(0.9*len(sents)):]
             sents = sents[:int(0.9*len(sents))]
-            gamma = self.estimate_gamma(sents, held_out, addone)
 
-        self.gamma = gamma
         self.models = []  # Guarda NGram para n = i entre (1,n)
 
+        print("Entrenando modelos con n <=",n)
         if addone:
+            print("Unigrama suavizado con AddOne")
             self.models.append(AddOneNGram(1, sents))
         else:
             self.models.append(NGram(1, sents))
@@ -256,6 +260,11 @@ class InterpolatedNGram(NGram):
             self.models.append(NGram(i, sents))
 
         self.counts = self.models[n-1].counts
+
+        if gamma is None:
+            gamma = self.estimate_gamma(sents, held_out, addone)
+
+        self.gamma = gamma
 
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
@@ -302,20 +311,19 @@ class InterpolatedNGram(NGram):
     def estimate_gamma(self, sents, held_out, addone):
         """Estima el gamma a partir de held_out
         """
-
+        print("Estimando gamma...")
         values = [i*100 for i in range(8, 13)]
         n = self.n
         perpl = 0
         model = None
         l_perpl = []  # Una lista de tuplas que guarda (Perplexity y gamma)
         for gamma in values:
-            # Crea un modelo para cada nuevo gamma.
-            model = InterpolatedNGram(n, sents, gamma, addone)
-            perpl = model.perplexity(held_out)
+            self.gamma = gamma
+            perpl = self.perplexity(held_out)
             l_perpl.append((perpl, gamma))
 
         r = min(l_perpl)[1]  # Minimiza la perplexity
-
+        print("Gamma estimado: ",r)
         return r
 
 
@@ -331,6 +339,8 @@ class BackOffNGram(NGram):
             held-out data).
         addone -- whether to use addone smoothing (default: True).
         """
+        print("Modelo de ngramas con n=",n)
+        print("Suavizado por Back-off con discounting con beta=",beta)
         assert(n > 0)
         self.n = n
         self.counts = counts = defaultdict(int)
@@ -345,6 +355,7 @@ class BackOffNGram(NGram):
             sents = sents[:int(0.9*len(sents))]
 
         if addone:
+            print("Unigrama suavizado con AddOne")
             self.v = len(set(list(chain.from_iterable(sents)))) + 1
 
         for sent in sents:
@@ -483,7 +494,6 @@ class BackOffNGram(NGram):
         l_perpl = []
         possible_betas = [
             0.1, 0.2, 0.3,
-            0.4, 0.5, 0.6,
             0.7, 0.8, 0.9
             ]
         for b in possible_betas:
