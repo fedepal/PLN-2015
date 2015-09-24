@@ -33,12 +33,17 @@ class TestNGramGenerator(TestCase):
         self.assertEqual(dict(generator.probs), probs)
 
     def test_init_2gram(self):
-        ngram = NGram(2, self.sents)
+        sents = [
+            'el'.split(),
+            'el gato come pescado .'.split(),
+            'la gata come salmón .'.split(),
+        ]
+        ngram = NGram(2, sents)
         generator = NGramGenerator(ngram)
 
         probs = {
-            ('<s>',): {'el': 0.5, 'la': 0.5},
-            ('el',): {'gato': 1.0},
+            ('<s>',): {'el': 2.0/3.0, 'la': 1.0/3.0},
+            ('el',): {'</s>': 0.5, 'gato': 0.5},
             ('gato',): {'come': 1.0},
             ('come',): {'pescado': 0.5, 'salmón': 0.5},
             ('pescado',): {'.': 1.0},
@@ -48,8 +53,8 @@ class TestNGramGenerator(TestCase):
             ('salmón',): {'.': 1.0},
         }
         sorted_probs = {
-            ('<s>',): [('el', 0.5), ('la', 0.5)],
-            ('el',): [('gato', 1.0)],
+            ('<s>',): [('el', 2.0/3.0), ('la', 1.0/3.0)],
+            ('el',): [('</s>', 0.5), ('gato', 0.5)],
             ('gato',): [('come', 1.0)],
             ('come',): [('pescado', 0.5), ('salmón', 0.5)],
             ('pescado',): [('.', 1.0)],

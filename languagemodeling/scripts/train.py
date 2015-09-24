@@ -1,7 +1,9 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> [-m <model>] [-g <gamma>] [-b <beta>] [--addone] -o <file>
+  train.py -n <n> [-m <model>] -o <file>
+  train.py -n <n> -m inter [-g <gamma>] [--addone] -o <file>
+  train.py -n <n> -m backoff [-b <beta>] [--addone] -o <file>
   train.py -h | --help
 
 Options:
@@ -23,7 +25,8 @@ import pickle
 from nltk import RegexpTokenizer
 from nltk.corpus import PlaintextCorpusReader
 from nltk.data import LazyLoader
-from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram, BackOffNGram
+from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram
+from languagemodeling.ngram import BackOffNGram
 
 
 if __name__ == '__main__':
@@ -40,7 +43,9 @@ if __name__ == '__main__':
     tokenizer = RegexpTokenizer(pattern)
     lazyloader = LazyLoader('tokenizers/punkt/spanish.pickle')
     # load the data
-    sents = PlaintextCorpusReader('../corpus', '.*\.txt', word_tokenizer=tokenizer,
+    sents = PlaintextCorpusReader('../corpus',
+                                  '.*\.txt',
+                                  word_tokenizer=tokenizer,
                                   sent_tokenizer=lazyloader).sents()
 
     # slice data 90% train data
@@ -57,15 +62,15 @@ if __name__ == '__main__':
     elif m == "inter":
         gamma = opts['-g']
         addone = opts['--addone']
-        float(gamma) if gamma is not None else None
+        if gamma is not None:
+            gamma = float(gamma)
         model = InterpolatedNGram(n, sents, gamma, addone)
     elif m == "backoff":
         beta = opts['-b']
         if beta is not None:
             beta = float(beta)
         addone = opts['--addone']
-
-        model = BackOffNGram(n,sents,beta,addone)
+        model = BackOffNGram(n, sents, beta, addone)
     else:
         print(__doc__)
         exit(0)

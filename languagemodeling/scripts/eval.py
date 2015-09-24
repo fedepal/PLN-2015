@@ -35,16 +35,16 @@ if __name__ == '__main__':
 
     # Slice data 10% test data
 
-    held_out = sents[int(0.9*len(sents)):]
+    train = sents[int(0.9*len(sents)):]
 
     filename = opts['-i']
     f = open(filename, "rb")
 
     model = pickle.load(f)
 
-    l_prob = model.log_probability(held_out)
-    c_entr = model.cross_entropy(held_out)
-    perpl = model.perplexity(held_out)
+    l_prob = model.log_probability(train)
+    c_entr = model.cross_entropy(train)
+    perpl = model.perplexity(train)
 
     print("Log Probability: ", l_prob)
     print("Cross Entropy: ", c_entr)
