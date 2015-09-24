@@ -1,0 +1,8 @@
+README - Práctico 1 - PLN
+
+Ejercicio 7
+
+            |   1   |   2   |   3   |   4   |
+add-one     |  1075 |  4301 | 25614 | 39291 |
+Interpolated|  1075 |  462  |  451  |  458  |
+Back-off    |  1072 |  397  |  393  |  400  |
