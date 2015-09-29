@@ -41,3 +41,15 @@ n   words   %      examples
 8   0       0.00%
 9   0       0.00%
 =   =====   ====== =====================
+
+Descripción etiquetas
+nc: Nombre común, sutantivos común
+sp: Preposiciones
+da: Artículos (DA = Determinante Artículo)
+vm: Verbos (Verbo principal)
+aq: Adjetivo calificativo
+fc: coma (F hace referencía a puntuaciones)
+np: Nombre propio
+fp: punto
+rg: Adverbio General
+cc: Conjunciones Coordinadas
