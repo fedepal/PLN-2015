@@ -41,14 +41,17 @@ if __name__ == '__main__':
     hits, total = 0, 0
     n = len(sents)
     unknown = 0
+    hits_unk = 0
     for i, sent in enumerate(sents):
         word_sent, gold_tag_sent = zip(*sent)
 
         model_tag_sent = model.tag(word_sent)
         assert len(model_tag_sent) == len(gold_tag_sent), i
-        for s in word_sent:
-            if model.unknown(s):
+        for w, t in sent:
+            if model.unknown(w):
                 unknown += 1
+                if model.tag_word(w) == t:
+                    hits_unk += 1
         # global score
         hits_sent = [m == g for m, g in zip(model_tag_sent, gold_tag_sent)]
         hits += sum(hits_sent)
@@ -58,9 +61,10 @@ if __name__ == '__main__':
         progress('{:3.1f}% ({:2.2f}%)'.format(float(i) * 100 / n, acc * 100))
 
     acc = float(hits) / total
-    acc_k = float(hits) /  (total - unknown)
-
-    print ("\nknown {:.2%}\tunknown {:.2%}".format(acc_k,1.0 - acc_k))
+    acc_u = float(hits_unk) / unknown
+    acc_k = float(hits - hits_unk) /  (total - unknown)
+    print(hits_unk)
+    print ("\nknown {:.2%}\tunknown {:.2%}".format(acc_k, acc_u))
     print('')
     print('Accuracy: {:2.2f}%'.format(acc * 100))
 
