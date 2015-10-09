@@ -63,8 +63,7 @@ if __name__ == '__main__':
     acc = float(hits) / total
     acc_u = float(hits_unk) / unknown
     acc_k = float(hits - hits_unk) /  (total - unknown)
-    print(hits_unk)
-    print ("\nknown {:.2%}\tunknown {:.2%}".format(acc_k, acc_u))
+    print("\nknown {:.2%}\tunknown {:.2%}".format(acc_k, acc_u))
     print('')
     print('Accuracy: {:2.2f}%'.format(acc * 100))
 
