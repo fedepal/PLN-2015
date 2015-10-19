@@ -1,5 +1,7 @@
 from collections import defaultdict
 from math import log2
+from itertools import chain
+from collections import Counter
 
 class HMM:
 
@@ -16,7 +18,7 @@ class HMM:
         self.out = out
         # tagset -> {D,N,V} los distintos tags.
         # trans -> las trancisiones y el peso de los tags, n-1 grama y el peso en un dicc
-                # trans = {(tuple):{tag:peso}}
+        # trans = {(tuple):{tag:peso}}
         # out = {tag:{word:prob}}
 
     def tagset(self):
@@ -80,11 +82,12 @@ class HMM:
         y -- tagging.
         """
         # prod de 1 a N P(Xi | Yi)
-
+        assert (len(x)==len(y))
         result = 1
         for t in zip(x,y):
             result = result * self.out_prob(t[0], t[1])
-        return result
+
+        return result * self.tag_prob(y)
 
     def tag_log_prob(self, y):
         """
@@ -116,14 +119,15 @@ class HMM:
         result = 0
         for t in zip(x,y):
             result += log2(self.out_prob(t[0],t[1]))
-        return result
+        return result + self.tag_log_prob(y)
 
     def tag(self, sent):
         """Returns the most probable tagging for a sentence.
 
         sent -- the sentence.
         """
-        # instanciar un viterbi
+        tagger = ViterbiTagger(self)
+        return tagger.tag(sent)
 
 class ViterbiTagger:
 
@@ -131,9 +135,6 @@ class ViterbiTagger:
         """
         hmm -- the HMM.
         """
-        self.n = hmm.n
-        self.tagset = hmm.tagset()
-        self._pi = defaultdict(lambda: defaultdict(tuple))
         self.hmm = hmm
 
     def tag(self, sent):
@@ -141,23 +142,130 @@ class ViterbiTagger:
 
         sent -- the sentence.
         """
+        hmm = self.hmm
+        n = hmm.n
+        tagset = hmm.tagset()
+        self._pi = pi = {}
 
-        n = self.n
-        pi = self._pi
-        tagset = self.tagset
-
-        init = (n-1)*('<s>',)
-        pi[0][init] = (log2(1),[])
+        init = (n-1) * ('<s>',)
+        pi[0] = {init : (0.0,[])}
 
         for k in range(1, len(sent)+1):
+            pi[k] = {}
             for prev_tags, (prob, bkp) in pi[k-1].items():
                 for tag in tagset:
                     pi_ant = prob
-                    q = self.hmm.trans_prob(tag,prev_tags)
-                    e = self.hmm.out_prob(sent[k-1],tag)
-                    if q != 0 and e != 0:
+                    q = hmm.trans_prob(tag,prev_tags)
+                    e = hmm.out_prob(sent[k-1],tag)
+                    # falta buscar el maximo
+                    if q > 0 and e > 0:
                         pi_k = pi_ant + log2(q) + log2(e)
-                        pi[k][prev_tags[1:]+(tag,)] = (pi_k, bkp + [tag])
+                        newprev = (prev_tags+(tag,))[1:]
+                        if newprev not in pi[k] or pi_k > pi[k][newprev][0]:
+                            pi[k][newprev] = (pi_k, bkp + [tag])
+
         # Devolver el max pi[len(sent)]
-        result = max(pi[len(sent)].values(), key=lambda x: x[0])[1]
+        max_p = float('-inf')
+        result = None
+        for prev_tags, (prob, bkp) in pi[len(sent)].items():
+            p = hmm.trans_prob('</s>',prev_tags)
+            if p > 0.0:
+                pi_k = prob + log2(p)
+                if pi_k > max_p:
+                    max_p = pi_k
+                    result = bkp
+
+        return result
+
+class MLHMM(HMM):
+
+    def __init__(self, n, tagged_sents, addone=True):
+        """
+        n -- order of the model.
+        tagged_sents -- training sentences, each one being a list of pairs.
+        addone -- whether to use addone smoothing (default: True).
+        """
+        # trans -- transition probabilities dictionary.
+        # out -- output probabilities dictionary.
+        # trans = {(tuple):{tag:peso}}
+        # out = {tag:{word:prob}}
+        self.addone = addone
+        self.n = n
+        self.tag_counts = defaultdict(int)
+        # Calcular tagset CORREGIR
+        list_ta_se = list(chain.from_iterable(tagged_sents))
+        self.word_tag_counts = Counter(list_ta_se)
+        w, t = zip(*list_ta_se)
+        self.t_set = set(t)
+        # Contar words
+        self.words_counts = Counter(w)
+        self.V = len(self.words_counts)
+        self.words_counts = dict(self.words_counts)
+        tag_counts = self.tag_counts
+        tag_counts[('<s>',)] = (n-1) * len(tagged_sents)
+        # Contar tags
+        for sent in tagged_sents:
+            if sent != []:
+                words, tags = zip(*sent)
+                # Contar las words tambien
+                words = list(words)
+                tags = list(tags)
+                tags[0:0] += (n-1)*['<s>']
+                tags.append('</s>')
+                for i in range(len(tags) - n + 1):
+                    # Contar <s>
+                    # Contar words aca corregir
+                    ngram = tuple(tags[i: i + n])
+                    tag_counts[ngram] += 1  # Cuento ngrama
+                    for j in range(1, n+1):
+                        tag_counts[ngram[j:]] += 1  # Cuento todos los j-gramas ant
+
+    def trans_prob(self, tag, prev_tags):
+        """Probability of a tag.
+
+        tag -- the tag.
+        prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
+        """
+        if len(prev_tags) == 0:
+            prev_tags = ()
+        result = self.tag_counts[prev_tags]
+        if result != 0:
+            tc = self.tag_counts[prev_tags + (tag,)]
+            if self.addone:
+                V = self.V
+                result = tc + 1 / result + V
+            else:
+                result = tc / result
+        return result
+
+    def out_prob(self, word, tag):
+        """Probability of a word given a tag.
+
+        word -- the word.
+        tag -- the tag.
+        """
+        result = self.tag_counts[(tag,)]
+        if self.unknown(word):
+            result = 1/self.V
+        else:
+            if result is not 0:
+                result = self.word_tag_counts[(word,tag)] / result
+
+        return result
+
+    def tcount(self, tokens):
+        """Count for an n-gram or (n-1)-gram of tags.
+
+        tokens -- the n-gram or (n-1)-gram tuple of tags.
+        """
+        return self.tag_counts.get(tokens, 0)
+
+    def unknown(self, w):
+        """Check if a word is unknown for the model.
+
+        w -- the word.
+        """
+        result = self.words_counts.get(w, True)
+        if result is not True:
+            result = False
         return result

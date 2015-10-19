@@ -46,11 +46,10 @@ if __name__ == '__main__':
         word_sent, gold_tag_sent = zip(*sent)
 
         model_tag_sent = model.tag(word_sent)
-        assert len(model_tag_sent) == len(gold_tag_sent), i
-        for w, t in sent:
+        for (w, gt), mt in zip(sent,model_tag_sent):
             if model.unknown(w):
                 unknown += 1
-                if model.tag_word(w) == t:
+                if gt == mt:
                     hits_unk += 1
         # global score
         hits_sent = [m == g for m, g in zip(model_tag_sent, gold_tag_sent)]
