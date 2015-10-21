@@ -16,3 +16,62 @@ def word_lower(h):
     """
     sent, i = h.sent, h.i
     return sent[i].lower()
+
+def word_istitle(h):
+
+    sent, i = h.sent, h.i
+    return sent[i].istitle()
+
+def word_isupper(h):
+
+    sent, i = h.sent, h.i
+    return sent[i].isupper()
+
+def word_isdigit(h):
+
+    sent, i = h.sent, h.i
+    return sent[i].isdigit()
+
+def prev_tags(h):
+
+    return h.prev_tags
+
+class NPrevTags(Feature):
+
+    def __init__(self, n):
+        """Feature: n previous tags tuple.
+
+        n -- number of previous tags to consider.
+        """
+        self.n = n
+        self._name = '{}-Prev_tags'.format(n)
+
+
+    def _evaluate(self, h):
+        """n previous tags tuple.
+
+        h -- a history.
+        """
+        return h.prev_tags[-self.n:]
+
+class PrevWord(Feature):
+
+    def __init__(self, f):
+        """Feature: the feature f applied to the previous word.
+
+        f -- the feature.
+        """
+        self.f = f
+
+    def _evaluate(self, h):
+        """Apply the feature to the previous word in the history.
+
+        h -- the history.
+        """
+        sent, prev_tags, i = h.sent, h.prev_tags, h.i
+        if i == 0:
+            prev_word = 'BOS'
+        else:
+            hn = History(sent, prev_tags, i-1)
+            prev_word = self.f(hn)
+        return str(prev_word)
