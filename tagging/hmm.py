@@ -195,6 +195,7 @@ class MLHMM(HMM):
         # Calcular tagset, todo este calculo se puede hacer dentro del for CORREGIR
         list_ta_se = list(chain.from_iterable(tagged_sents))
         self.word_tag_counts = Counter(list_ta_se)
+        self.word_tag_counts = dict(self.word_tag_counts)
         w, t = zip(*list_ta_se)
         self.t_set = set(t)
         # Contar words
@@ -231,14 +232,15 @@ class MLHMM(HMM):
         """
         if len(prev_tags) == 0:
             prev_tags = ()
-        result = self.tag_counts.get(prev_tags,0.0)
-        if result != 0:
-            tc = self.tag_counts.get(prev_tags + (tag,),0.0)
-            if self.addone:
-                V = self.V
-                result = tc + 1 / result + V
-            else:
-                result = tc / result
+        result = 0
+        p_tc = self.tag_counts.get(prev_tags,0.0)
+        tc = self.tag_counts.get(prev_tags + (tag,),0.0)
+        if self.addone:
+            V = self.V
+            result = (tc + 1) / (p_tc + V)
+        else:
+            if p_tc is not 0:
+                result = tc / p_tc
         return result
 
     def out_prob(self, word, tag):
@@ -252,7 +254,7 @@ class MLHMM(HMM):
         else:
             result = self.tag_counts.get((tag,),0.0)
             if result is not 0:
-                result = self.word_tag_counts[(word,tag)] / result
+                result = self.word_tag_counts.get((word,tag),0.0) / result
 
         return result
 
