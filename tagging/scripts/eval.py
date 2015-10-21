@@ -56,14 +56,18 @@ if __name__ == '__main__':
         hits += sum(hits_sent)
         total += len(sent)
         acc = float(hits) / total
-
-        progress('{:3.1f}% ({:2.2f}%)'.format(float(i) * 100 / n, acc * 100))
+        acc_u = float(hits_unk) / unknown
+        acc_k = float(hits - hits_unk) /  (total - unknown)
+        progress('{:3.1%} ({:2.2%} / {:2.2%} / {:2.2%})'.format(float(i)/ n,
+                                                                acc,
+                                                                acc_k,
+                                                                acc_u
+                                                                ))
 
     acc = float(hits) / total
     acc_u = float(hits_unk) / unknown
     acc_k = float(hits - hits_unk) /  (total - unknown)
-    print("\nknown {:.2%}\tunknown {:.2%}".format(acc_k, acc_u))
-    print('')
-    print('Accuracy: {:2.2f}%'.format(acc * 100))
+
+    print('\nAccuracy: {:2.2%} known {:.2%}\tunknown {:.2%}'.format(acc, acc_k, acc_u))
 
     # Matriz de confusion

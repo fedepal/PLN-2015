@@ -192,7 +192,7 @@ class MLHMM(HMM):
         self.addone = addone
         self.n = n
         self.tag_counts = defaultdict(int)
-        # Calcular tagset CORREGIR
+        # Calcular tagset, todo este calculo se puede hacer dentro del for CORREGIR
         list_ta_se = list(chain.from_iterable(tagged_sents))
         self.word_tag_counts = Counter(list_ta_se)
         w, t = zip(*list_ta_se)
@@ -202,7 +202,7 @@ class MLHMM(HMM):
         self.V = len(self.words_counts)
         self.words_counts = dict(self.words_counts)
         tag_counts = self.tag_counts
-        tag_counts[('<s>',)] = (n-1) * len(tagged_sents)
+        # tag_counts[('<s>',)] = (n-1) * len(tagged_sents)
         # Contar tags
         for sent in tagged_sents:
             if sent != []:
@@ -212,13 +212,16 @@ class MLHMM(HMM):
                 tags = list(tags)
                 tags[0:0] += (n-1)*['<s>']
                 tags.append('</s>')
+                tag_counts[()] += len(tags)
                 for i in range(len(tags) - n + 1):
-                    # Contar <s>
                     # Contar words aca corregir
                     ngram = tuple(tags[i: i + n])
-                    tag_counts[ngram] += 1  # Cuento ngrama
+                    # tag_counts[ngram] += 1  # Cuento ngrama
                     for j in range(1, n+1):
-                        tag_counts[ngram[j:]] += 1  # Cuento todos los j-gramas ant
+                        tag_counts[ngram[:j]] += 1
+                for i in range(1,n):
+                    tag_counts[tuple(tags[-n+i:])] += 1
+        self.tag_counts = dict(tag_counts)
 
     def trans_prob(self, tag, prev_tags):
         """Probability of a tag.
@@ -228,9 +231,9 @@ class MLHMM(HMM):
         """
         if len(prev_tags) == 0:
             prev_tags = ()
-        result = self.tag_counts[prev_tags]
+        result = self.tag_counts.get(prev_tags,0.0)
         if result != 0:
-            tc = self.tag_counts[prev_tags + (tag,)]
+            tc = self.tag_counts.get(prev_tags + (tag,),0.0)
             if self.addone:
                 V = self.V
                 result = tc + 1 / result + V
@@ -244,10 +247,10 @@ class MLHMM(HMM):
         word -- the word.
         tag -- the tag.
         """
-        result = self.tag_counts[(tag,)]
         if self.unknown(word):
             result = 1/self.V
         else:
+            result = self.tag_counts.get((tag,),0.0)
             if result is not 0:
                 result = self.word_tag_counts[(word,tag)] / result
 
