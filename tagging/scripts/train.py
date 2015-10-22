@@ -18,11 +18,13 @@ import pickle
 from corpus.ancora import SimpleAncoraCorpusReader
 from tagging.baseline import BaselineTagger
 from tagging.hmm import MLHMM
+from tagging.memm import MEMM
 
 
 models = {
     'base': BaselineTagger,
-    'mlhmm': MLHMM
+    'mlhmm': MLHMM,
+    'memm': MEMM
 }
 
 
@@ -41,7 +43,8 @@ if __name__ == '__main__':
         model = models[model](sents)
     if model == 'mlhmm':
         model = models[model](n, sents)
-
+    if model == 'memm':
+        model = models[model](n, sents)
     # save it
     filename = opts['-o']
     f = open(filename, 'wb')

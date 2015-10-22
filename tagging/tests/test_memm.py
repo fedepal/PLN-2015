@@ -111,3 +111,14 @@ class TestMEMM(TestCase):
 
         for model in models:
             self.assertEqual(model.tag(sent), result)
+
+    def test_unknown(self):
+        hmm = MEMM(2, self.tagged_sents)
+
+        known = {'el', 'gato', 'come', 'pescado', '.', 'la', 'gata', 'salmón'}
+        for w in known:
+            self.assertFalse(hmm.unknown(w))
+
+        unknown = {'perro', 'salame'}
+        for w in unknown:
+            self.assertTrue(hmm.unknown(w))
