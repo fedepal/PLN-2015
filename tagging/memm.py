@@ -29,7 +29,7 @@ class MEMM:
         for f in features:
             f2 += [PrevWord(f)]
         features += f2
-        # FIX , NPrevTags, PrevWord
+
         vectorizer = Vectorizer(features)
         classif = LogisticRegression()
         pipe = Pipeline([('vect', vectorizer),
