@@ -3,6 +3,7 @@ from math import log2
 from itertools import chain
 from collections import Counter
 
+
 class HMM:
 
     def __init__(self, n, tagset, trans, out):
@@ -16,10 +17,6 @@ class HMM:
         self.t_set = tagset
         self.trans = trans
         self.out = out
-        # tagset -> {D,N,V} los distintos tags.
-        # trans -> las trancisiones y el peso de los tags, n-1 grama y el peso en un dicc
-        # trans = {(tuple):{tag:peso}}
-        # out = {tag:{word:prob}}
 
     def tagset(self):
         """Returns the set of tags.
@@ -56,9 +53,6 @@ class HMM:
 
         y -- tagging.
         """
-        # N largo de la sentencia
-        # prod (de 1 a N+1 ) P(Yi | Yi-(anteriores n-1 gramas)
-        # Agregamos <s>
 
         n = self.n
         y[0:0] += (n-1) * ['<s>']
@@ -81,10 +75,9 @@ class HMM:
         x -- sentence.
         y -- tagging.
         """
-        # prod de 1 a N P(Xi | Yi)
-        assert (len(x)==len(y))
+        assert (len(x) == len(y))
         result = 1
-        for t in zip(x,y):
+        for t in zip(x, y):
             result = result * self.out_prob(t[0], t[1])
 
         return result * self.tag_prob(y)
@@ -115,10 +108,9 @@ class HMM:
         x -- sentence.
         y -- tagging.
         """
-
         result = 0
-        for t in zip(x,y):
-            result += log2(self.out_prob(t[0],t[1]))
+        for t in zip(x, y):
+            result += log2(self.out_prob(t[0], t[1]))
         return result + self.tag_log_prob(y)
 
     def tag(self, sent):
@@ -128,6 +120,7 @@ class HMM:
         """
         tagger = ViterbiTagger(self)
         return tagger.tag(sent)
+
 
 class ViterbiTagger:
 
@@ -148,17 +141,17 @@ class ViterbiTagger:
         self._pi = pi = {}
 
         init = (n-1) * ('<s>',)
-        pi[0] = {init : (0.0,[])}
+        pi[0] = {init: (0.0, [])}
 
         for k in range(1, len(sent)+1):
             pi[k] = {}
 
-            outs_probs = [(tag,hmm.out_prob(sent[k-1],tag)) for tag in tagset]
-            outs_probs1 = [(tag,prob) for tag, prob in outs_probs if prob > 0]
+            outs_probs = [(tag, hmm.out_prob(sent[k-1], tag)) for tag in tagset]
+            outs_probs1 = [(tag, prob) for tag, prob in outs_probs if prob > 0]
             for tag, out_prob in outs_probs1:
                 for prev_tags, (prob, bkp) in pi[k-1].items():
                     pi_ant = prob
-                    q = hmm.trans_prob(tag,prev_tags)
+                    q = hmm.trans_prob(tag, prev_tags)
                     e = out_prob
                     if q > 0:
                         pi_k = pi_ant + log2(q) + log2(e)
@@ -166,11 +159,10 @@ class ViterbiTagger:
                         if newprev not in pi[k] or pi_k > pi[k][newprev][0]:
                             pi[k][newprev] = (pi_k, bkp + [tag])
 
-        # Devolver el max pi[len(sent)]
         max_p = float('-inf')
         result = None
         for prev_tags, (prob, bkp) in pi[len(sent)].items():
-            p = hmm.trans_prob('</s>',prev_tags)
+            p = hmm.trans_prob('</s>', prev_tags)
             if p > 0.0:
                 pi_k = prob + log2(p)
                 if pi_k > max_p:
@@ -178,6 +170,7 @@ class ViterbiTagger:
                     result = bkp
 
         return result
+
 
 class MLHMM(HMM):
 
@@ -187,34 +180,30 @@ class MLHMM(HMM):
         tagged_sents -- training sentences, each one being a list of pairs.
         addone -- whether to use addone smoothing (default: True).
         """
-        # trans -- transition probabilities dictionary.
-        # out -- output probabilities dictionary.
-        # trans = {(tuple):{tag:peso}}
-        # out = {tag:{word:prob}}
         self.addone = addone
         self.n = n
 
-        # Count de (word,tag)
-        list_ta_se = list(chain.from_iterable(tagged_sents)) # Lista de listas a lista
+        # Count de (word,tag), pasamos de una lista de listas a lista.
+        list_ta_se = list(chain.from_iterable(tagged_sents))
         self.word_tag_counts = Counter(list_ta_se)
         self.word_tag_counts = dict(self.word_tag_counts)
 
         words, tags = zip(*list_ta_se)
-        self.tag_counts_1 = Counter(tags) # Counts tamaño 1
+        self.tag_counts_1 = Counter(tags)  # Counts tamaño 1
         # agregamos el conteo de <s>
         self.tag_counts_1['<s>'] = (n-1) * len(tagged_sents)
 
-        self.tag_counts = defaultdict(int) # Counts tamaño n y n-1
+        self.tag_counts = defaultdict(int)  # Counts tamaño n y n-1
         tag_counts = self.tag_counts
 
         # tagset
         self.t_set = list(self.tag_counts_1.keys())
         # wordset
         self.w_set, t = zip(*list(self.word_tag_counts.keys()))
+        t = None
         self.w_set = set(self.w_set)
         # tamaño vocabulario
         self.V = len(self.w_set)
-        t = None
         list_ta_se = None
 
         # Contar tags tamaño n y n-1
@@ -250,8 +239,8 @@ class MLHMM(HMM):
             prev_tags = ()
         result = 0
 
-        p_tc = self.tag_counts.get(prev_tags,0.0)
-        tc = self.tag_counts.get(prev_tags + (tag,),0.0)
+        p_tc = self.tag_counts.get(prev_tags, 0.0)
+        tc = self.tag_counts.get(prev_tags + (tag,), 0.0)
         if self.addone:
             V = self.V
             result = (tc + 1) / (p_tc + V)
@@ -267,11 +256,11 @@ class MLHMM(HMM):
         tag -- the tag.
         """
         if self.unknown(word):
-            result = 1/self.V
+            result = 1 / self.V
         else:
-            result = self.tag_counts_1.get(tag,0.0)
+            result = self.tag_counts_1.get(tag, 0.0)
             if result is not 0:
-                result = self.word_tag_counts.get((word,tag),0.0) / result
+                result = self.word_tag_counts.get((word, tag), 0.0) / result
 
         return result
 
@@ -287,4 +276,4 @@ class MLHMM(HMM):
 
         w -- the word.
         """
-        return not w in self.w_set
+        return w not in self.w_set

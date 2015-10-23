@@ -23,18 +23,20 @@ if __name__ == '__main__':
     # compute the statistics
     print('sents: {}'.format(len(sents)))
 
-    #compute ocurrences
+    # compute ocurrences
     sents = list(chain.from_iterable(sents))
     words = defaultdict(int)
     tags = defaultdict(int)
     for w, t in sents:
-        words[(w,t)] += 1
+        words[(w, t)] += 1
         tags[t] += 1
 
     ocurrences = sum(words.values())
     print('ocurrences: {}'.format(ocurrences))
     # compute vocabulary
-    v = len(words)
+    v, t = zip(*words.keys())
+    t = None
+    v = len(set(v))
     print('V: {}'.format(v))
     # compute tags vocabulary
     k = len(tags)
@@ -55,58 +57,55 @@ if __name__ == '__main__':
     print("\nTags")
     print('tag\tfreq\t%\ttop5')
     i = 0
-    while i in range(0,10):
-        print('{0}\t{1}\t{2:2.2%}\t{3}\t'.format(tags[i][0],tags[i][1],tags[i][1]/ocurrences,' '.join(freq[tags[i][0]])))
+    while i in range(0, 10):
+        print('{0}\t{1}\t{2:2.2%}\t{3}\t'.format(tags[i][0],
+                                                 tags[i][1],
+                                                 tags[i][1]/ocurrences,
+                                                 ' '.join(freq[tags[i][0]])))
         i += 1
 
-    #ambiguity
+    # ambiguity
 
     t1, t2 = zip(*words)  # t1 (x1,x2), x1 = word, x2 = tag t2 = (counts)
     a1, a2 = zip(*t1)  # a1: Words, a2: tags, words with repeats(repetitions)
     t1 = None
     a2 = None
-    words_counts = zip(a1,t2)
+    words_counts = zip(a1, t2)
     t2 = None
     c = Counter(a1)  # Cuenta palabras repetidas en a1
     a1 = None
     amb = Counter(c.values())  # Cuenta cantidad de repeticiones de palabras
 
-    l_amb = defaultdict(lambda : ('',0,0))
-    for w,co in words_counts:
-        l_amb[w] = (w,l_amb[w][1] + co, c[w])
+    l_amb = defaultdict(lambda: ('', 0, 0))
+    for w, co in words_counts:
+        l_amb[w] = (w, l_amb[w][1] + co, c[w])
     l_amb = l_amb.values()
 
-    l_amb = sorted(l_amb, key=lambda x:(x[2],x[1]),reverse=True)
+    l_amb = sorted(l_amb, key=lambda x: (x[2], x[1]), reverse=True)
 
     # Ya ordenadas por frecuencia y ambiguedad, deshacemos de los counts
-
     l_amb, a, b = zip(*l_amb)
     a = None
     b = None
     result = defaultdict(tuple)
     i = 10
     index = 0
-    while len(result) < 10:  # FIX las palabras no son las más frecuentes
+    while len(result) < 10:
         i -= 1
         index += amb[i]
         result[i]
-        if index != 0 and amb[i]>=5:
+        # obtenemos las palabras frecuentes
+        if index != 0 and amb[i] >= 5:
             result[i] = tuple(l_amb[:5])
+        # Son menos de 5, para no irnos de rango tomamos las que haya.
         else:
             result[i] = tuple(l_amb[0:amb[i]])
         l_amb = l_amb[amb[i]:]
     print("\nWords")
     print('n\twords\t%\texamples')
-    for i in range(1,10):
-        print('{0}\t{1}\t{2:2.2%}\t{3}'.format(i,amb[i],amb[i]/v,' '.join(result[i])))
-
-
-# l1,l2 = zip(*c)
-#*t desarma tuplas
-#**d desarma diccionarios
-#calcular tokens: la cantidad de ocurrencias de palabras
-
-#tag freq % top
-#nc 999 17.79 (años,presidente....)5
-
-# n words % top5
+    for i in range(1, 10):
+        print('{0}\t{1}\t{2:2.2%}\t{3}'.format(i,
+                                               amb[i],
+                                               amb[i]/v,
+                                               ' '.join(result[i])
+                                               ))

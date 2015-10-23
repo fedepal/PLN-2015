@@ -8,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 
+
 class MEMM:
 
     def __init__(self, n, tagged_sents):
@@ -31,7 +32,9 @@ class MEMM:
         features += f2
 
         vectorizer = Vectorizer(features)
-        classif = LogisticRegression()
+        # classif = LogisticRegression()
+        classif = MultinomialNB()
+        # classif = LinearSVC()
         pipe = Pipeline([('vect', vectorizer),
                          ('clasif', classif)])
         histories = self.sents_histories(tagged_sents)
@@ -111,9 +114,12 @@ class MEMM:
         for i in range(len(sent)):
             # Contruir una history
             h = History(sent, prev_tags, i)
+            # predict del Tag
             tag = self.tag_history(h)
+            # cambia el prev_tag con el tag nuevo
             prev_tags = prev_tags + tuple(tag)
             prev_tags = prev_tags[1:]
+            # Guardamos el nuevo tag en la lista
             result += tag
 
         return result
@@ -130,4 +136,4 @@ class MEMM:
 
         w -- the word.
         """
-        return not w in self.V
+        return w not in self.V

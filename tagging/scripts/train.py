@@ -8,6 +8,7 @@ Options:
   -m <model>    Model to use [default: base]:
                   base: Baseline
                   mlhmm: MLHMM
+                  memm: MEMM
   -n <n>        n-gram [default: 2]
   -o <file>     Output model file.
   -h --help     Show this screen.

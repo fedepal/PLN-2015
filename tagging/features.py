@@ -17,24 +17,29 @@ def word_lower(h):
     sent, i = h.sent, h.i
     return sent[i].lower()
 
+
 def word_istitle(h):
 
     sent, i = h.sent, h.i
     return sent[i].istitle()
+
 
 def word_isupper(h):
 
     sent, i = h.sent, h.i
     return sent[i].isupper()
 
+
 def word_isdigit(h):
 
     sent, i = h.sent, h.i
     return sent[i].isdigit()
 
+
 def prev_tags(h):
 
     return str(h.prev_tags)
+
 
 class NPrevTags(Feature):
 
@@ -46,13 +51,13 @@ class NPrevTags(Feature):
         self.n = n
         self._name = '{}-Prev_tags'.format(n)
 
-
     def _evaluate(self, h):
         """n previous tags tuple.
 
         h -- a history.
         """
         return str(h.prev_tags[-self.n:])
+
 
 class PrevWord(Feature):
 

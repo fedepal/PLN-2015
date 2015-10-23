@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import chain
 
+
 class BaselineTagger:
 
     def __init__(self, tagged_sents):
@@ -8,11 +9,11 @@ class BaselineTagger:
         tagged_sents -- training sentences, each one being a list of pairs.
         """
         tagged_sents = list(chain.from_iterable(tagged_sents))
-        tag_sents = defaultdict(lambda : defaultdict(int))
+        tag_sents = defaultdict(lambda: defaultdict(int))
         tags = defaultdict(int)
 
-        for w,t in tagged_sents:
-            tag_sents[w][t] +=1
+        for w, t in tagged_sents:
+            tag_sents[w][t] += 1
         self.tag_sents = dict(tag_sents)
 
         # Calculate most frequent tag
