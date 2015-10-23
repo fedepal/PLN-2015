@@ -210,6 +210,9 @@ sys	0m0.468s
 
 Ejercicio 6
 -----------
+Al castear la salida de PrevWord, NPrevTags, prev_tags a str, para que funcione
+el ejercicio 7, no pasa los test_features.py
+
 Ejercicio 7
 -----------
 LogisticRegression
