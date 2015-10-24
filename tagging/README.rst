@@ -14,16 +14,16 @@ Frecuencia de tags
 === =====   ======  =======================================
 tag freq    %       top5
 === =====   ======  =======================================
-nc	92002	17.79%	años presidente millones equipo partido
-sp	79904	15.45%	de en a del con
-da	54552	10.55%	la el los las El
-vm	50609	9.78%	está tiene dijo puede hace
-aq	33904	6.55%	pasado gran mayor nuevo próximo
-fc	30148	5.83%	,
-np	29113	5.63%	Gobierno España PP Barcelona Madrid
-fp	21157	4.09%	. ( )
-rg	15333	2.96%	más hoy también ayer ya
-cc	15023	2.90%	y pero o Pero e
+nc  92002   17.79%  años presidente millones equipo partido
+sp  79904   15.45%  de en a del con
+da  54552   10.55%  la el los las El
+vm  50609   9.78%   está tiene dijo puede hace
+aq  33904   6.55%   pasado gran mayor nuevo próximo
+fc  30148   5.83%   ,
+np  29113   5.63%   Gobierno España PP Barcelona Madrid
+fp  21157   4.09%   . ( )
+rg  15333   2.96%   más hoy también ayer ya
+cc  15023   2.90%   y pero o Pero e
 === =====   ======  =======================================
 
 Ambigüedad
@@ -31,15 +31,15 @@ Ambigüedad
 =   =====   ====== =====================
 n   words   %      examples
 =   =====   ====== =====================
-1	44109	94.89%	, el en con por
-2	2194	4.72%	la y " los del
-3	153		0.33%	. a un no es
-4	19		0.04%	de dos este tres todo
-5	4		0.01%	que mismo cinco medio
-6	3		0.01%	una como uno
-7	0		0.00%
-8	0		0.00%
-9	0		0.00%
+1   44109   94.89%  , el en con por
+2   2194    4.72%   la y " los del
+3   153	    0.33%   . a un no es
+4   19	    0.04%   de dos este tres todo
+5   4	    0.01%   que mismo cinco medio
+6   3	    0.01%   una como uno
+7   0       0.00%
+8   0       0.00%
+9   0       0.00%
 =   =====   ====== =====================
 
 | Descripción etiquetas
@@ -64,7 +64,7 @@ Ejercicio 3
 | Evaluación de baseline
 | Accuracy: 89.00% known 95.31%	unknown 31.80%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.016	 0.0015	 0.12	 0.7	 0.006	 0.048	 0.0015	 0.0045	 0.0
 
@@ -99,7 +99,8 @@ N = 1
 | $ time python tagging/scripts/eval.py -i mlhmm1
 | Accuracy: 89.01% known 95.32%	unknown 31.80%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.016	 0.0015	 0.13	 0.7	 0.0059	 0.047	 0.0015	 0.0045	 0.0
 
 sp	0.45	 0.0	 0.0	 0.0	 0.0	 0.0	 0.05	 0.0	 0.0	 0.5
@@ -130,7 +131,8 @@ N = 2
 | $ time python tagging/scripts/eval.py -i mlhmm2
 | Accuracy: 92.61% known 97.44%	unknown 48.81%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.064	 0.16	 0.12	 0.25	 0.33	 0.0059	 0.00084	 0.00084	 0.0
 
 sp	0.035	 0.0	 0.15	 0.035	 0.012	 0.0	 0.1	 0.035	 0.0	 0.62
@@ -161,7 +163,7 @@ N = 3
 | $ time python tagging/scripts/eval.py -i mlhmm3
 | Accuracy: 92.52% known 96.98%	unknown 52.18%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.067	 0.17	 0.12	 0.29	 0.25	 0.011	 0.001	 0.001	 0.0
 
@@ -193,7 +195,7 @@ N = 4
 | $ time python tagging/scripts/eval.py -i mlhmm4
 | Accuracy: 92.42% known 96.69%	unknown 53.76%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.054	 0.17	 0.12	 0.3	 0.25	 0.021	 0.002	 0.001	 0.002
 
@@ -234,7 +236,7 @@ N = 1
 | $ time python tagging/scripts/eval.py -i memm1
 | Accuracy: 92.69% known 99.65%	unknown 91.27%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0072	 0.0048	 0.4	 0.43	 0.092	 0.013	 0.0008	 0.0024	 0.0
 
@@ -266,7 +268,7 @@ N = 2
 | $ time python tagging/scripts/eval.py -i memm2
 | Accuracy: 91.97% known 99.65%	unknown 90.40%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0054	 0.0041	 0.37	 0.49	 0.079	 0.0075	 0.0	 0.002	 0.0
 
@@ -297,7 +299,7 @@ N = 3
 | $ time python tagging/scripts/eval.py -i memm3
 | Accuracy: 92.17% known 94.60%	unknown 70.13%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0067	 0.0033	 0.4	 0.47	 0.077	 0.0087	 0.0	 0.002	 0.0
 
@@ -329,7 +331,7 @@ N = 4
 | $ time python tagging/scripts/eval.py -i memm4
 | Accuracy: 92.18% known 94.58%	unknown 70.35%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0054	 0.0034	 0.37	 0.48	 0.083	 0.017	 0.00068	 0.002	 0.0
 
@@ -362,7 +364,7 @@ N=1
 | $ time python tagging/scripts/eval.py -i svc1
 | Accuracy: 94.43% known 97.04%	unknown 70.82%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.011	 0.0011	 0.36	 0.42	 0.12	 0.021	 0.0011	 0.0044	 0.0
 
@@ -394,7 +396,7 @@ N= 2
 | $ time python tagging/scripts/eval.py -i svc2
 | Accuracy: 94.29% known 96.90%	unknown 70.57%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0099	 0.00099	 0.34	 0.47	 0.11	 0.012	 0.00099	 0.004	 0.00099
 
@@ -426,7 +428,7 @@ N=3
 | $ time python tagging/scripts/eval.py -i svc3
 | Accuracy: 94.48% known 96.89%	unknown 72.60%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0098	 0.00098	 0.31	 0.51	 0.11	 0.0098	 0.00098	 0.0039	 0.00098
 
@@ -458,7 +460,7 @@ N=4
 | $ time python tagging/scripts/eval.py -i svc4
 | Accuracy: 94.31% known 96.70%	unknown 72.64%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.0094	 0.0019	 0.32	 0.48	 0.1	 0.016	 0.00094	 0.0038	 0.0019
 
@@ -492,7 +494,7 @@ N=1
 | $ time python tagging/scripts/eval.py -i mnb1
 | Accuracy: 78.84% known 82.12%	unknown 49.09%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.45	 0.25	 0.13	 0.082	 0.086	 0.0027	 0.0	 0.0013	 0.0
 
@@ -523,7 +525,7 @@ N=2
 | $ time python tagging/scripts/eval.py -i mnb2
 | Accuracy: 49.98% known 52.27%	unknown 29.26%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.22	 0.24	 0.049	 0.37	 0.035	 0.0058	 0.001	 0.0077	 0.013
 
@@ -554,7 +556,7 @@ N=3
 | $ time python tagging/scripts/eval.py -i mnb3
 | Accuracy: 46.86% known 48.92%	unknown 28.18%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
+|   nc	sp	da	vm	aq	np	rg	cc	di	cs
 
 nc	0.0	 0.28	 0.2	 0.022	 0.35	 0.042	 0.016	 0.017	 0.0054	 0.01
 
@@ -585,29 +587,22 @@ N=4
 | $time python tagging/scripts/eval.py -i mnb4
 | Accuracy: 45.07% known 47.01%	unknown 27.45%
 
-	nc	sp	da	vm	aq	np	rg	cc	di	cs
-
-nc	0.0	 0.28	 0.18	 0.037	 0.31	 0.073	 0.013	 0.016	 0.0037	 0.013
-
-sp	0.34	 0.0	 0.42	 0.034	 0.0015	 0.11	 0.0013	 0.0054	 0.00042	 0.0046
-
-da	0.42	 0.24	 0.0	 0.051	 0.19	 0.02	 0.0009	 0.0063	 0.0	 0.0003
-
-vm	0.25	 0.24	 0.26	 0.0	 0.081	 0.037	 0.012	 0.027	 0.0021	 0.015
-
-aq	0.3	 0.31	 0.18	 0.034	 0.0	 0.051	 0.016	 0.026	 0.0017	 0.014
-
-np	0.23	 0.27	 0.33	 0.057	 0.056	 0.0	 0.01	 0.033	 0.0	 0.0061
-
-rg	0.19	 0.25	 0.27	 0.057	 0.084	 0.039	 0.0	 0.039	 0.0033	 0.01
-
-cc	0.3	 0.13	 0.32	 0.042	 0.015	 0.11	 0.017	 0.0	 0.0013	 0.013
-
-di	0.31	 0.16	 0.19	 0.052	 0.13	 0.036	 0.0056	 0.034	 0.0	 0.0067
-
-cs	0.17	 0.21	 0.26	 0.042	 0.031	 0.029	 0.0018	 0.029	 0.00059	 0.0
+==  =====    =====   =====   =====   =====   =====   =====   =====   ======  =====
+.   nc       sp      da      vm      aq      np      rg      cc      di      cs
+==  =====    =====   =====   =====   =====   =====   =====   =====   ======  =====
+nc  0.0      0.28    0.18    0.037    0.31   0.073   0.013   0.016   .0037   0.013
+sp  0.34     0.0     0.42    0.034   .0015   0.11    .0013   .0054   .00042  .0046
+da  0.42     0.24    0.0     0.051   0.19    0.02    .0009   .0063   0.0     .0003
+vm  0.25     0.24    0.26    0.0     0.081   0.037   0.012   0.027   .0021   0.015
+aq  0.3      0.31    0.18    0.034   0.0     0.051   0.016   0.026   .0017   0.014
+np  0.23     0.27    0.33    0.057   0.056   0.0     0.01    0.033   0.0     .0061
+rg  0.19     0.25    0.27    0.057   0.084   0.039   0.0     0.039   .0033   0.01
+cc  0.3	     0.13    0.32    0.042   0.015   0.11    0.017   0.0     .0013   0.013
+di  0.31     0.16    0.19    0.052   0.13    0.036   .0056   0.034   0.0     .0067
+cs  0.17     0.21    0.26    0.042   0.031   0.029   .0018   0.029   .00059  0.0
+==  =====    =====   =====   =====   =====   =====   =====   =====   ======  =====
 
 
-|real	28m13.758s
-|user	23m4.716s
-|sys	5m6.588s
+| real	28m13.758s
+| user	23m4.716s
+| sys	5m6.588s
