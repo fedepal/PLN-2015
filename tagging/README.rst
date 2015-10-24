@@ -5,8 +5,8 @@ Ejercicio 1
 -----------
 
 **sents:** 17379
-**ocurrences:** 517300
-**V:** 49071
+**ocurrences:** 517268
+**V:** 46482
 **K:** 48
 
 Frecuencia de tags
@@ -14,16 +14,16 @@ Frecuencia de tags
 === =====   ======  =======================================
 tag freq    %       top5
 === =====   ======  =======================================
-nc  92002   17.79%  años presidente millones equipo partido
-sp  79904   15.45%  de en a del con
-da  54552   10.55%  la el los las El
-vm  50609   9.78%   está tiene dijo puede hace
-aq  33904   6.55%   pasado gran mayor nuevo próximo
-fc  30148   5.83%   ,
-np  29113   5.63%   Gobierno España PP Barcelona Madrid
-fp  21157   4.09%   . ( )
-rg  15333   2.96%   más hoy también ayer ya
-cc  15023   2.90%   y pero o Pero e
+nc	92002	17.79%	años presidente millones equipo partido
+sp	79904	15.45%	de en a del con
+da	54552	10.55%	la el los las El
+vm	50609	9.78%	está tiene dijo puede hace
+aq	33904	6.55%	pasado gran mayor nuevo próximo
+fc	30148	5.83%	,
+np	29113	5.63%	Gobierno España PP Barcelona Madrid
+fp	21157	4.09%	. ( )
+rg	15333	2.96%	más hoy también ayer ya
+cc	15023	2.90%	y pero o Pero e
 === =====   ======  =======================================
 
 Ambigüedad
@@ -31,28 +31,28 @@ Ambigüedad
 =   =====   ====== =====================
 n   words   %      examples
 =   =====   ====== =====================
-1   44110   89.89% , el en con por
-2   2194    4.47%  la y " los del
-3   153     0.31%  . a un no es
-4   19      0.04%  de dos este tres todo
-5   4       0.01%  que mismo cinco medio
-6   3       0.01%  una como uno
-7   0       0.00%
-8   0       0.00%
-9   0       0.00%
+1	44109	94.89%	, el en con por
+2	2194	4.72%	la y " los del
+3	153		0.33%	. a un no es
+4	19		0.04%	de dos este tres todo
+5	4		0.01%	que mismo cinco medio
+6	3		0.01%	una como uno
+7	0		0.00%
+8	0		0.00%
+9	0		0.00%
 =   =====   ====== =====================
 
-Descripción etiquetas
-nc: Nombre común, sutantivos común
-sp: Preposiciones
-da: Artículos (DA = Determinante Artículo)
-vm: Verbos (Verbo principal)
-aq: Adjetivo calificativo
-fc: coma (F hace referencía a puntuaciones)
-np: Nombre propio
-fp: punto
-rg: Adverbio General
-cc: Conjunciones Coordinadas
+| Descripción etiquetas
+| nc: Nombre común, sutantivos común
+| sp: Preposiciones
+| da: Artículos (DA = Determinante Artículo)
+| vm: Verbos (Verbo principal)
+| aq: Adjetivo calificativo
+| fc: coma (F hace referencía a puntuaciones)
+| np: Nombre propio
+| fp: punto
+| rg: Adverbio General
+| cc: Conjunciones Coordinadas
 
 Ejercicio 2
 -----------
@@ -61,11 +61,11 @@ Además contamos el tag mas frecuente.
 
 Ejercicio 3
 -----------
-Evaluación de baseline
-100.0% (89.00% / 95.31% / 31.80%)
-Accuracy: 89.00% known 95.31%	unknown 31.80%
+| Evaluación de baseline
+| Accuracy: 89.00% known 95.31%	unknown 31.80%
 
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.016	 0.0015	 0.12	 0.7	 0.006	 0.048	 0.0015	 0.0045	 0.0
 
 sp	0.45	 0.0	 0.0	 0.0	 0.0	 0.0	 0.05	 0.0	 0.0	 0.5
@@ -92,9 +92,13 @@ Ejercicio 4
 
 Ejercicio 5
 -----------
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mlhmm1
-100.0% (89.01% / 95.32% / 31.80%)
-Accuracy: 89.01% known 95.32%	unknown 31.80%
+**MLHMM**
+
+N = 1
+
+| $ time python tagging/scripts/eval.py -i mlhmm1
+| Accuracy: 89.01% known 95.32%	unknown 31.80%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
 nc	0.0	 0.016	 0.0015	 0.13	 0.7	 0.0059	 0.047	 0.0015	 0.0045	 0.0
 
@@ -117,13 +121,15 @@ di	0.16	 0.0	 0.0	 0.0	 0.27	 0.0	 0.3	 0.0	 0.0	 0.0
 cs	0.025	 0.015	 0.0	 0.0	 0.0	 0.0	 0.004	 0.014	 0.0	 0.0
 
 
-real	0m7.178s
-user	0m7.004s
-sys	0m0.072s
+| real	0m7.178s
+| user	0m7.004s
+| sys	0m0.072s
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mlhmm2
-100.0% (92.61% / 97.44% / 48.81%)
-Accuracy: 92.61% known 97.44%	unknown 48.81%
+N = 2
+
+| $ time python tagging/scripts/eval.py -i mlhmm2
+| Accuracy: 92.61% known 97.44%	unknown 48.81%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
 nc	0.0	 0.064	 0.16	 0.12	 0.25	 0.33	 0.0059	 0.00084	 0.00084	 0.0
 
@@ -146,14 +152,17 @@ di	0.028	 0.0	 0.069	 0.0	 0.75	 0.0	 0.014	 0.0	 0.0	 0.0
 cs	0.012	 0.12	 0.0078	 0.012	 0.0	 0.0078	 0.019	 0.093	 0.0	 0.0
 
 
-real	0m11.659s
-user	0m11.344s
-sys	0m0.064s
+| real	0m11.659s
+| user	0m11.344s
+| sys	0m0.064s
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mlhmm3
-100.0% (92.52% / 96.98% / 52.18%)
-Accuracy: 92.52% known 96.98%	unknown 52.18%
+N = 3
+
+| $ time python tagging/scripts/eval.py -i mlhmm3
+| Accuracy: 92.52% known 96.98%	unknown 52.18%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.067	 0.17	 0.12	 0.29	 0.25	 0.011	 0.001	 0.001	 0.0
 
 sp	0.076	 0.0	 0.15	 0.11	 0.013	 0.076	 0.11	 0.025	 0.0	 0.42
@@ -175,14 +184,17 @@ di	0.039	 0.0	 0.039	 0.0	 0.83	 0.0	 0.016	 0.0	 0.0	 0.0
 cs	0.0027	 0.4	 0.0082	 0.014	 0.0	 0.014	 0.019	 0.084	 0.0	 0.0
 
 
-real	0m39.121s
-user	0m39.024s
-sys	0m0.068s
+| real	0m39.121s
+| user	0m39.024s
+| sys	0m0.068s
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mlhmm4
-100.0% (92.42% / 96.69% / 53.76%)
-Accuracy: 92.42% known 96.69%	unknown 53.76%
+N = 4
+
+| $ time python tagging/scripts/eval.py -i mlhmm4
+| Accuracy: 92.42% known 96.69%	unknown 53.76%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.054	 0.17	 0.12	 0.3	 0.25	 0.021	 0.002	 0.001	 0.002
 
 sp	0.1	 0.0	 0.15	 0.16	 0.012	 0.081	 0.12	 0.023	 0.0	 0.31
@@ -204,9 +216,9 @@ di	0.034	 0.0	 0.034	 0.027	 0.76	 0.0	 0.014	 0.0	 0.0	 0.0
 cs	0.0021	 0.44	 0.0082	 0.039	 0.0	 0.0082	 0.023	 0.09	 0.0	 0.0
 
 
-real	3m47.566s
-user	3m47.152s
-sys	0m0.468s
+| real	3m47.566s
+| user	3m47.152s
+| sys	0m0.468s
 
 Ejercicio 6
 -----------
@@ -215,46 +227,143 @@ el ejercicio 7, no pasa los test_features.py
 
 Ejercicio 7
 -----------
-LogisticRegression
+**LogisticRegression**
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i memm1
-100.0% (92.69% / 99.65% / 91.27%)
-Accuracy: 92.69% known 99.65%	unknown 91.27%
+N = 1
 
-real	0m26.307s
-user	0m26.208s
-sys	0m0.092s
+| $ time python tagging/scripts/eval.py -i memm1
+| Accuracy: 92.69% known 99.65%	unknown 91.27%
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i memm2
-100.0% (91.97% / 99.65% / 90.40%)
-Accuracy: 91.97% known 99.65%	unknown 90.40%
-
-real	0m26.028s
-user	0m25.928s
-sys	0m0.092s
-
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i memm3
-100.0% (92.17% / 94.60% / 70.13%)
-Accuracy: 92.17% known 94.60%	unknown 70.13%
-
-real	0m32.089s
-user	0m31.852s
-sys	0m0.220s
-
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i memm4
-100.0% (92.18% / 94.58% / 70.35%)
-Accuracy: 92.18% known 94.58%	unknown 70.35%
-
-real	0m36.342s
-user	0m36.216s
-sys	0m0.108s
-
-SVM
-
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i svc1
-100.0% (94.43% / 97.04% / 70.82%)
-Accuracy: 94.43% known 97.04%	unknown 70.82%
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
+nc	0.0	 0.0072	 0.0048	 0.4	 0.43	 0.092	 0.013	 0.0008	 0.0024	 0.0
+
+sp	0.081	 0.0	 0.0	 0.23	 0.3	 0.0	 0.029	 0.0	 0.0	 0.36
+
+da	0.55	 0.0	 0.0	 0.019	 0.0	 0.019	 0.0	 0.0	 0.0	 0.0
+
+vm	0.37	 0.00093	 0.0	 0.0	 0.46	 0.16	 0.0	 0.0	 0.0	 0.0
+
+aq	0.52	 0.0039	 0.0	 0.42	 0.0	 0.034	 0.0015	 0.0	 0.013	 0.0
+
+np	0.67	 0.0056	 0.0	 0.24	 0.064	 0.0	 0.0	 0.0028	 0.0	 0.0
+
+rg	0.072	 0.024	 0.0015	 0.3	 0.44	 0.048	 0.0	 0.031	 0.003	 0.013
+
+cc	0.016	 0.016	 0.0	 0.2	 0.031	 0.016	 0.69	 0.0	 0.0	 0.016
+
+di	0.13	 0.0	 0.0	 0.062	 0.33	 0.047	 0.2	 0.0	 0.0	 0.0
+
+cs	0.0022	 0.041	 0.0	 0.073	 0.037	 0.0022	 0.015	 0.039	 0.0	 0.0
+
+
+| real	0m26.307s
+| user	0m26.208s
+| sys	0m0.092s
+
+N = 2
+
+| $ time python tagging/scripts/eval.py -i memm2
+| Accuracy: 91.97% known 99.65%	unknown 90.40%
+
+	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
+nc	0.0	 0.0054	 0.0041	 0.37	 0.49	 0.079	 0.0075	 0.0	 0.002	 0.0
+
+sp	0.17	 0.0	 0.0	 0.24	 0.22	 0.0	 0.027	 0.0	 0.0	 0.34
+
+da	0.53	 0.0	 0.0	 0.014	 0.0	 0.018	 0.0	 0.0	 0.0	 0.0
+
+vm	0.41	 0.00077	 0.0	 0.0	 0.44	 0.13	 0.0	 0.0	 0.0	 0.0
+
+aq	0.6	 0.0032	 0.0	 0.35	 0.0	 0.029	 0.0019	 0.0	 0.012	 0.0
+
+np	0.68	 0.0056	 0.0	 0.25	 0.045	 0.0	 0.0	 0.0028	 0.0	 0.0
+
+rg	0.25	 0.024	 0.0015	 0.3	 0.26	 0.047	 0.0	 0.031	 0.003	 0.013
+
+cc	0.045	 0.015	 0.0	 0.2	 0.015	 0.015	 0.68	 0.0	 0.0	 0.015
+
+di	0.18	 0.0	 0.0	 0.081	 0.28	 0.044	 0.18	 0.0	 0.0	 0.0
+
+cs	0.038	 0.052	 0.0	 0.087	 0.025	 0.0027	 0.019	 0.049	 0.0	 0.0
+
+| real	0m26.028s
+| user	0m25.928s
+| sys	0m0.092s
+
+N = 3
+
+| $ time python tagging/scripts/eval.py -i memm3
+| Accuracy: 92.17% known 94.60%	unknown 70.13%
+
+	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
+nc	0.0	 0.0067	 0.0033	 0.4	 0.47	 0.077	 0.0087	 0.0	 0.002	 0.0
+
+sp	0.11	 0.0	 0.0	 0.27	 0.23	 0.0	 0.04	 0.0	 0.0	 0.34
+
+da	0.52	 0.0	 0.0	 0.0088	 0.0044	 0.018	 0.0	 0.0	 0.0	 0.0
+
+vm	0.39	 0.00082	 0.0	 0.0	 0.45	 0.15	 0.0024	 0.0	 0.0	 0.0
+
+aq	0.54	 0.0035	 0.0	 0.4	 0.0	 0.031	 0.0092	 0.0	 0.013	 0.0
+
+np	0.71	 0.0083	 0.0	 0.22	 0.05	 0.0	 0.0	 0.0028	 0.0	 0.0
+
+rg	0.16	 0.023	 0.0	 0.37	 0.29	 0.051	 0.0	 0.031	 0.0029	 0.013
+
+cc	0.03	 0.015	 0.0	 0.2	 0.045	 0.015	 0.67	 0.0	 0.0	 0.015
+
+di	0.14	 0.0	 0.0069	 0.097	 0.26	 0.048	 0.16	 0.0	 0.0	 0.0
+
+cs	0.022	 0.059	 0.0	 0.091	 0.053	 0.0063	 0.028	 0.053	 0.0	 0.0
+
+
+| real	0m32.089s
+| user	0m31.852s
+| sys	0m0.220s
+
+N = 4
+
+| $ time python tagging/scripts/eval.py -i memm4
+| Accuracy: 92.18% known 94.58%	unknown 70.35%
+
+	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
+nc	0.0	 0.0054	 0.0034	 0.37	 0.48	 0.083	 0.017	 0.00068	 0.002	 0.0
+
+sp	0.12	 0.0	 0.0	 0.25	 0.24	 0.0065	 0.039	 0.0	 0.0	 0.35
+
+da	0.55	 0.0	 0.0	 0.009	 0.0045	 0.018	 0.0	 0.0	 0.0	 0.0
+
+vm	0.38	 0.00088	 0.0	 0.0	 0.45	 0.16	 0.0027	 0.0	 0.0	 0.0
+
+aq	0.52	 0.0034	 0.00069	 0.42	 0.0	 0.032	 0.0083	 0.0	 0.012	 0.0
+
+np	0.71	 0.0056	 0.0028	 0.2	 0.065	 0.0	 0.0	 0.0028	 0.0	 0.0
+
+rg	0.16	 0.023	 0.0	 0.36	 0.3	 0.05	 0.0	 0.027	 0.0029	 0.013
+
+cc	0.015	 0.015	 0.0	 0.2	 0.045	 0.03	 0.67	 0.0	 0.0	 0.015
+
+di	0.17	 0.0	 0.0	 0.11	 0.24	 0.049	 0.16	 0.0	 0.0	 0.0
+
+cs	0.017	 0.063	 0.0	 0.11	 0.06	 0.0067	 0.023	 0.053	 0.0	 0.0
+
+| real	0m36.342s
+| user	0m36.216s
+| sys	0m0.108s
+
+**SVM**
+
+N=1
+
+| $ time python tagging/scripts/eval.py -i svc1
+| Accuracy: 94.43% known 97.04%	unknown 70.82%
+
+	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.011	 0.0011	 0.36	 0.42	 0.12	 0.021	 0.0011	 0.0044	 0.0
 
 sp	0.057	 0.0	 0.0	 0.12	 0.18	 0.0	 0.045	 0.0	 0.0	 0.59
@@ -276,14 +385,17 @@ di	0.054	 0.0	 0.0	 0.022	 0.37	 0.011	 0.26	 0.0	 0.0	 0.0
 cs	0.017	 0.047	 0.0	 0.042	 0.015	 0.0	 0.015	 0.05	 0.0	 0.0
 
 
-real	0m26.102s
-user	0m25.996s
-sys	0m0.100s
+| real	0m26.102s
+| user	0m25.996s
+| sys	0m0.100s
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i svc2
-100.0% (94.29% / 96.90% / 70.57%)
-Accuracy: 94.29% known 96.90%	unknown 70.57%
+N= 2
+
+| $ time python tagging/scripts/eval.py -i svc2
+| Accuracy: 94.29% known 96.90%	unknown 70.57%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.0099	 0.00099	 0.34	 0.47	 0.11	 0.012	 0.00099	 0.004	 0.00099
 
 sp	0.11	 0.0	 0.0	 0.12	 0.11	 0.0	 0.045	 0.0	 0.0	 0.61
@@ -305,14 +417,17 @@ di	0.054	 0.0	 0.0	 0.022	 0.3	 0.011	 0.26	 0.0	 0.0	 0.0
 cs	0.033	 0.063	 0.0	 0.053	 0.0099	 0.0	 0.02	 0.066	 0.0	 0.0
 
 
-real	0m27.176s
-user	0m27.096s
-sys	0m0.072s
+| real	0m27.176s
+| user	0m27.096s
+| sys	0m0.072s
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i svc3
-100.0% (94.48% / 96.89% / 72.60%)
-Accuracy: 94.48% known 96.89%	unknown 72.60%
+N=3
+
+| $ time python tagging/scripts/eval.py -i svc3
+| Accuracy: 94.48% known 96.89%	unknown 72.60%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.0098	 0.00098	 0.31	 0.51	 0.11	 0.0098	 0.00098	 0.0039	 0.00098
 
 sp	0.045	 0.0	 0.0	 0.13	 0.17	 0.0	 0.045	 0.0	 0.0	 0.61
@@ -334,14 +449,17 @@ di	0.02	 0.0	 0.0	 0.02	 0.23	 0.0099	 0.24	 0.0	 0.0	 0.0
 cs	0.027	 0.073	 0.0	 0.05	 0.038	 0.0	 0.015	 0.073	 0.0	 0.0
 
 
-real	0m27.070s
-user	0m27.008s
-sys	0m0.056s
+| real	0m27.070s
+| user	0m27.008s
+| sys	0m0.056s
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i svc4
-100.0% (94.31% / 96.70% / 72.64%)
-Accuracy: 94.31% known 96.70%	unknown 72.64%
+N=4
+
+| $ time python tagging/scripts/eval.py -i svc4
+| Accuracy: 94.31% known 96.70%	unknown 72.64%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.0094	 0.0019	 0.32	 0.48	 0.1	 0.016	 0.00094	 0.0038	 0.0019
 
 sp	0.064	 0.0	 0.0	 0.12	 0.18	 0.0	 0.043	 0.0	 0.0	 0.6
@@ -363,15 +481,19 @@ di	0.018	 0.0	 0.0	 0.018	 0.23	 0.018	 0.22	 0.0	 0.0	 0.0
 cs	0.028	 0.075	 0.0	 0.063	 0.032	 0.0	 0.016	 0.067	 0.0	 0.0
 
 
-real	0m27.129s
-user	0m27.052s
-sys	0m0.072s
+| real	0m27.129s
+| user	0m27.052s
+| sys	0m0.072s
 
-MultinomialNB
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mnb1
-100.0% (78.84% / 82.12% / 49.09%)
-Accuracy: 78.84% known 82.12%	unknown 49.09%
+**MultinomialNB**
+
+N=1
+
+| $ time python tagging/scripts/eval.py -i mnb1
+| Accuracy: 78.84% known 82.12%	unknown 49.09%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.45	 0.25	 0.13	 0.082	 0.086	 0.0027	 0.0	 0.0013	 0.0
 
 sp	0.04	 0.0	 0.74	 0.0	 0.0027	 0.096	 0.0027	 0.0	 0.0	 0.11
@@ -392,15 +514,17 @@ di	0.28	 0.032	 0.28	 0.14	 0.23	 0.004	 0.028	 0.0	 0.0	 0.0
 
 cs	0.026	 0.3	 0.35	 0.071	 0.0021	 0.011	 0.0	 0.034	 0.0	 0.0
 
+| real	16m41.884s
+| user	16m33.860s
+| sys	0m0.300s
 
-real	16m41.884s
-user	16m33.860s
-sys	0m0.300s
+N=2
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mnb2
-100.0% (49.98% / 52.27% / 29.26%)
-Accuracy: 49.98% known 52.27%	unknown 29.26%
+| $ time python tagging/scripts/eval.py -i mnb2
+| Accuracy: 49.98% known 52.27%	unknown 29.26%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.22	 0.24	 0.049	 0.37	 0.035	 0.0058	 0.001	 0.0077	 0.013
 
 sp	0.38	 0.0	 0.5	 0.056	 0.0	 0.022	 0.00022	 0.0027	 0.00022	 0.0049
@@ -421,15 +545,17 @@ di	0.39	 0.19	 0.12	 0.051	 0.17	 0.013	 0.0067	 0.0013	 0.0	 0.0
 
 cs	0.12	 0.19	 0.29	 0.043	 0.013	 0.0066	 0.00066	 0.011	 0.0	 0.0
 
+| real	15m38.318s
+| user	15m37.584s
+| sys	0m0.196s
 
-real	15m38.318s
-user	15m37.584s
-sys	0m0.196s
+N=3
 
-(pln-2015)fede@fede-X450LN:~/Documentos/famaf/pln/PLN-2015$ time python tagging/scripts/eval.py -i mnb3
-100.0% (46.86% / 48.92% / 28.18%)
-Accuracy: 46.86% known 48.92%	unknown 28.18%
+| $ time python tagging/scripts/eval.py -i mnb3
+| Accuracy: 46.86% known 48.92%	unknown 28.18%
+
 	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
 nc	0.0	 0.28	 0.2	 0.022	 0.35	 0.042	 0.016	 0.017	 0.0054	 0.01
 
 sp	0.39	 0.0	 0.47	 0.038	 0.0021	 0.045	 0.00064	 0.0051	 0.0	 0.0077
@@ -450,7 +576,38 @@ di	0.36	 0.17	 0.15	 0.048	 0.16	 0.021	 0.0085	 0.027	 0.0	 0.0036
 
 cs	0.14	 0.17	 0.25	 0.042	 0.028	 0.016	 0.0025	 0.014	 0.0	 0.0
 
+| real	16m56.893s
+| user	16m56.028s
+| sys	0m0.148s
 
-real	16m56.893s
-user	16m56.028s
-sys	0m0.148s
+N=4
+
+| $time python tagging/scripts/eval.py -i mnb4
+| Accuracy: 45.07% known 47.01%	unknown 27.45%
+
+	nc	sp	da	vm	aq	np	rg	cc	di	cs
+
+nc	0.0	 0.28	 0.18	 0.037	 0.31	 0.073	 0.013	 0.016	 0.0037	 0.013
+
+sp	0.34	 0.0	 0.42	 0.034	 0.0015	 0.11	 0.0013	 0.0054	 0.00042	 0.0046
+
+da	0.42	 0.24	 0.0	 0.051	 0.19	 0.02	 0.0009	 0.0063	 0.0	 0.0003
+
+vm	0.25	 0.24	 0.26	 0.0	 0.081	 0.037	 0.012	 0.027	 0.0021	 0.015
+
+aq	0.3	 0.31	 0.18	 0.034	 0.0	 0.051	 0.016	 0.026	 0.0017	 0.014
+
+np	0.23	 0.27	 0.33	 0.057	 0.056	 0.0	 0.01	 0.033	 0.0	 0.0061
+
+rg	0.19	 0.25	 0.27	 0.057	 0.084	 0.039	 0.0	 0.039	 0.0033	 0.01
+
+cc	0.3	 0.13	 0.32	 0.042	 0.015	 0.11	 0.017	 0.0	 0.0013	 0.013
+
+di	0.31	 0.16	 0.19	 0.052	 0.13	 0.036	 0.0056	 0.034	 0.0	 0.0067
+
+cs	0.17	 0.21	 0.26	 0.042	 0.031	 0.029	 0.0018	 0.029	 0.00059	 0.0
+
+
+|real	28m13.758s
+|user	23m4.716s
+|sys	5m6.588s
