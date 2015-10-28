@@ -10,7 +10,7 @@ class CKYParser:
         """
         grammar -- a binarised NLTK PCFG.
         """
-        assert(grammar.is_chomsky_normal_form())
+        # assert(grammar.is_chomsky_normal_form())
         assert(grammar.is_binarised())
 
         # grammar.start()
@@ -28,13 +28,8 @@ class CKYParser:
         grammar = self.grammar
         start = grammar.start() # Start symbol
         n = len(sent) # number of words in the sentence
-        N = set()# non-terminals in the grammar
-        for prod in grammar.productions():
-            N.add(prod.lhs())
-
-        # split the productions, X -> Y Z and X -> sent[i]
-        term = []
-        nonterm = []
+        term = [] # Producciones con terminales
+        nonterm = [] # Producciones con no terminales
 
         for prod in grammar.productions():
             if prod.is_lexical():
@@ -83,6 +78,3 @@ class CKYParser:
         tree = bp[(1,n)][str(start)]
 
         return (lp, tree)
-
-
-        # i, j entre 1..n y i<=j
