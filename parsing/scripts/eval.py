@@ -56,9 +56,9 @@ if __name__ == '__main__':
     format_str = '{} {:3.1f}% ({}/{}) (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
     progress(format_str.format('',0.0, 0, n, 0.0, 0.0, 0.0))
     for i, gold_parsed_sent in enumerate(parsed_sents):
-        tagged_sent = gold_parsed_sent.pos()
-
-        if len(tagged_sent) <= m:
+        if len(gold_parsed_sent.leaves()) <= m:
+            gold_parsed_sent.chomsky_normal_form()
+            tagged_sent = gold_parsed_sent.pos()
             n_parsed_sents += 1
             # parse
             model_parsed_sent = model.parse(tagged_sent)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
                                        u_rec,
                                        u_f1))
 
-            if i+1 == n:
+            if n_parsed_sents == n:
                 break
 
     print('')

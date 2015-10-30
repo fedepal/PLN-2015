@@ -35,6 +35,8 @@ class TestCKYParser(TestCase):
 
         lp, t = parser.parse(sent)
 
+        # Terminar
+
     def test_parse(self):
         grammar = PCFG.fromstring(
             """

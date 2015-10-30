@@ -36,7 +36,7 @@ class TestUPCFG(TestCase):
 
         prods = model.productions()
 
-        prods2 = [ # faltan las palabras
+        prods2 = [
             ProbabilisticProduction(N('S'), [N('NP'), N('VP')], prob=1.0),
             ProbabilisticProduction(N('NP'), [N('Det'), N('Noun')], prob=0.5),
             ProbabilisticProduction(N('Det'), ['Det'], prob=1.0),
@@ -64,7 +64,7 @@ class TestUPCFG(TestCase):
         tagged_sent = list(zip(sent, tags))
         tree = model.parse(tagged_sent)
 
-        self.assertEqual(tree[1], t)
+        self.assertEqual(tree, t)
 
     def test_parse_no_parse_returns_flat(self):
         t = Tree.fromstring(
@@ -82,4 +82,4 @@ class TestUPCFG(TestCase):
         tree = model.parse(tagged_sent)
 
         tree2 = Tree.fromstring("(S (Noun gato) (Det el) (Verb come) (Noun pescado) (Adj crudo))")
-        self.assertEqual(tree[1], tree2)
+        self.assertEqual(tree, tree2)
