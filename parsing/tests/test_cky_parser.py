@@ -29,13 +29,28 @@ class TestCKYParser(TestCase):
                 IN -> 'with'        [0.6]
                 IN -> 'in'          [0.4]
             """)
+
         parser = CKYParser(grammar)
 
         sent = "the man saw the dog with the telescope".split()
 
         lp, t = parser.parse(sent)
 
-        # Terminar
+        # check tree
+        t2 = Tree.fromstring(
+            """
+                (S
+                    (NP (DT the)(NN man))
+                    (VP
+                        (Vt saw)
+                        (NP
+                            (NP (DT the)(NN dog))
+                            (PP (IN with)
+                                (NP (DT the)(NN telescope))))))""")
+
+        self.assertEqual(t, t2)
+
+        # checkear pi, bp, lp
 
     def test_parse(self):
         grammar = PCFG.fromstring(

@@ -1,6 +1,8 @@
 from nltk.grammar import induce_pcfg, Nonterminal
 from parsing.cky_parser import CKYParser
 from parsing.util import unlexicalize, lexicalize
+from nltk.tree import Tree
+import copy
 class UPCFG:
     """Unlexicalized PCFG.
     """
@@ -12,28 +14,16 @@ class UPCFG:
         start = Nonterminal(start)
         prods = []
         for tree in parsed_sents:
-            sent, tags = zip(*tree.pos())
-            tree = unlexicalize(tree)
-            tree.chomsky_normal_form()
-            prods += tree.productions()
-            tree = lexicalize(tree, sent)
-
-        #
-        # prods_counts = Counter(prods) # Cambiar la forma de contar
-        # nonterm_counts = Counter(nonterm)
-        #
-        # prods = set(prods)
-        # pprods = [] # is_terminal is_nonterminal nltk.grammar
-        # for prod in prods:
-        #     pprods.append(ProbabilisticProduction(prod.lhs(),
-        #                                       prod.rhs(),
-        #                                       prob=(prods_counts[prod] / nonterm_counts[prod.lhs()])))
-
-        # Calcular start
+            ntree = tree.copy(deep=True)
+            unlexicalize(ntree)
+            ntree.chomsky_normal_form()
+            ntree.collapse_unary(collapsePOS=True)
+            prods += ntree.productions()
 
         pcfg = induce_pcfg(start=start, productions=prods)
         self._prods = pcfg.productions()
         self._parser = CKYParser(pcfg)
+        self._start = pcfg.start()  # Necesito start para construir el flat en parse
 
     def productions(self):
         """Returns the list of UPCFG probabilistic productions.
@@ -47,9 +37,9 @@ class UPCFG:
         """
         sent, tags = zip(*tagged_sent)
         lp, tree = self._parser.parse(tags)
-        tree = lexicalize(tree, sent)
-        # lpos = tree.treepositions('leaves')
-        # for i in range(len(sent)):
-        #     tree[lpos[i]] = sent[i]
-
+        if tree is None and lp == float('-inf'):
+            tree = Tree(self._start.symbol(), [Tree(tag, [word]) for word, tag in tagged_sent])
+        else:
+            tree = lexicalize(tree, sent)
+            tree.un_chomsky_normal_form()
         return tree

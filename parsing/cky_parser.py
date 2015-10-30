@@ -9,12 +9,24 @@ class CKYParser:
         # assert(grammar.is_chomsky_normal_form())
         assert(grammar.is_binarised())
 
-        # grammar.start()
-        # grammar.productions()
-        # grammar.leftcorners(grammar.start())
         self.grammar = grammar
         self._pi = {}
         self._bp = {}
+        term = self._term = [] # Producciones con terminales
+        nonterm = self._nonterm = {} # Producciones con no terminales
+
+        for prod in grammar.productions():
+            if prod.is_lexical():
+                term.append(prod)
+            elif(len(prod.rhs()) == 2):
+                y = prod.rhs()[0].symbol()
+                z = prod.rhs()[1].symbol()
+                x = prod.lhs().symbol()
+                lprob = prod.logprob()
+                if (y,z) not in nonterm:
+                    nonterm[(y,z)] = [(x,lprob)]
+                else:
+                    nonterm[(y,z)] += [(x,lprob)]
 
     def parse(self, sent):
         """Parse a sequence of terminals.
@@ -24,20 +36,8 @@ class CKYParser:
         grammar = self.grammar
         start = grammar.start() # Start symbol
         n = len(sent) # number of words in the sentence
-        term = [] # Producciones con terminales
-        nonterm = {} # Producciones con no terminales
-
-        for prod in grammar.productions():
-            if prod.is_lexical():
-                term.append(prod)
-            elif len(prod.rhs()) == 2:
-                y = prod.rhs()[0].symbol()
-                z = prod.rhs()[1].symbol()
-                x = prod.lhs().symbol()
-                lprob = prod.logprob()
-                nonterm[(y,z)] = (x, lprob)
-                # Ignorar len(rhs) == 0, y 1 que no sea no terminal
-
+        term = self._term
+        nonterm = self._nonterm
         pi = self._pi
         bp = self._bp
         # Init
@@ -65,27 +65,23 @@ class CKYParser:
                     if pi_i_s is not None and pi_s_j is not None:
                         for Y in pi_i_s.keys():
                             for Z in pi_s_j.keys():
-                                X = nonterm.get((Y, Z), None)
-                                # Y = X.rhs()[0].symbol()
-                                # Z = X.rhs()[1].symbol()
+                                list_X = nonterm.get((Y, Z), None)
+                                if list_X is not None:
+                                    for X in list_X:
+                                        x = X[0]
+                                        prob = X[1]
+                                        prob_pi_i_s = pi_i_s.get(Y, None)
+                                        tree_bp_i_s = bp_i_s.get(Y, None)
+                                        prob_pi_s_j = pi_s_j.get(Z, None)
+                                        tree_bp_s_j = bp_s_j.get(Z, None)
+                                        if prob_pi_i_s is not None and prob_pi_s_j is not None:
+                                            pi_i_j = prob + prob_pi_i_s + prob_pi_s_j
 
-                                if X is not None:
-                                    x = X[0]
-                                    prob = X[1]
-                                    prob_pi_i_s = pi_i_s.get(Y, None)
-                                    tree_bp_i_s = bp_i_s.get(Y, None)
-                                    prob_pi_s_j = pi_s_j.get(Z, None)
-                                    tree_bp_s_j = bp_s_j.get(Z, None)
-                                    pi_i_j = prob + prob_pi_i_s + prob_pi_s_j
+                                            if x not in pi[(i,j)] or pi_i_j > pi[(i,j)][x]: # faltaria ver el empate
+                                                pi[(i,j)][x] = pi_i_j
+                                                bp[(i,j)][x] = Tree(x, [tree_bp_i_s,tree_bp_s_j])
 
-                                    if x not in pi[(i,j)] or pi_i_j > pi[(i,j)][x]:
-                                        pi[(i,j)][x] = pi_i_j
-                                        bp[(i,j)][x] = Tree(x, [tree_bp_i_s,tree_bp_s_j])
+        lp = pi[(1,n)].get(str(start), float('-inf'))
+        tree = bp[(1,n)].get(str(start), None)
 
-        lp = pi[(1,n)].get(str(start), None)
-        if lp is None:
-            print("no parse")
-            tree = Tree(str(start), [Tree(word, [word]) for word in sent])
-        else:
-            tree = bp[(1,n)][str(start)]
         return (lp, tree)

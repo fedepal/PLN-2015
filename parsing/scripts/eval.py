@@ -57,12 +57,10 @@ if __name__ == '__main__':
     progress(format_str.format('',0.0, 0, n, 0.0, 0.0, 0.0))
     for i, gold_parsed_sent in enumerate(parsed_sents):
         if len(gold_parsed_sent.leaves()) <= m:
-            gold_parsed_sent.chomsky_normal_form()
             tagged_sent = gold_parsed_sent.pos()
             n_parsed_sents += 1
             # parse
             model_parsed_sent = model.parse(tagged_sent)
-
             # compute labeled scores
             gold_spans = spans(gold_parsed_sent, unary=False)
             model_spans = spans(model_parsed_sent, unary=False)
