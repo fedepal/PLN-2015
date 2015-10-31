@@ -50,10 +50,12 @@ if __name__ == '__main__':
     m = opts['-m']
     if m is not None:
         m = int(m)
+        print("Parsing sents only with length < 20")
     else:
         m = float('inf')
 
     format_str = '{} {:3.1f}% ({}/{}) (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
+    format_str2 = '{} (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
     progress(format_str.format('',0.0, 0, n, 0.0, 0.0, 0.0))
     for i, gold_parsed_sent in enumerate(parsed_sents):
         if len(gold_parsed_sent.leaves()) <= m:
@@ -85,15 +87,13 @@ if __name__ == '__main__':
 
             progress(format_str.format('Labeled',
                                        float(i+1) * 100 / n,
-                                       i+1, n,
+                                       i+1,
+                                       n,
                                        prec,
                                        rec,
                                        f1)
                     +
-                     format_str.format(' Unlabeled',
-                                       float(i+1) * 100 / n,
-                                       i+1,
-                                       n,
+                     format_str2.format(' Unlabeled',
                                        u_prec,
                                        u_rec,
                                        u_f1))
