@@ -81,5 +81,14 @@ class TestUPCFG(TestCase):
         tagged_sent = list(zip(sent, tags))
         tree = model.parse(tagged_sent)
 
-        tree2 = Tree.fromstring("(S (Noun gato) (Det el) (Verb come) (Noun pescado) (Adj crudo))")
+        tree2 = Tree.fromstring(
+            """
+                (S
+                    (Noun gato)
+                    (Det el)
+                    (Verb come)
+                    (Noun pescado)
+                    (Adj crudo)
+                )
+            """)
         self.assertEqual(tree, tree2)

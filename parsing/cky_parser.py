@@ -1,5 +1,6 @@
 from nltk.tree import Tree
 
+
 class CKYParser:
 
     def __init__(self, grammar):
@@ -12,8 +13,8 @@ class CKYParser:
         self.grammar = grammar
         self._pi = {}
         self._bp = {}
-        term = self._term = [] # Producciones con terminales
-        nonterm = self._nonterm = {} # Producciones con no terminales
+        term = self._term = []  # Producciones con terminales
+        nonterm = self._nonterm = {}  # Producciones con no terminales
 
         for prod in grammar.productions():
             if prod.is_lexical():
@@ -23,10 +24,10 @@ class CKYParser:
                 z = prod.rhs()[1].symbol()
                 x = prod.lhs().symbol()
                 lprob = prod.logprob()
-                if (y,z) not in nonterm:
-                    nonterm[(y,z)] = [(x,lprob)]
+                if (y, z) not in nonterm:
+                    nonterm[(y, z)] = [(x, lprob)]
                 else:
-                    nonterm[(y,z)] += [(x,lprob)]
+                    nonterm[(y, z)] += [(x, lprob)]
 
     def parse(self, sent):
         """Parse a sequence of terminals.
@@ -34,8 +35,8 @@ class CKYParser:
         sent -- the sequence of terminals.
         """
         grammar = self.grammar
-        start = grammar.start() # Start symbol
-        n = len(sent) # number of words in the sentence
+        start = grammar.start()  # Start symbol
+        n = len(sent)  # number of words in the sentence
         term = self._term
         nonterm = self._nonterm
         pi = self._pi
@@ -51,11 +52,11 @@ class CKYParser:
                     pi[(i, i)][nt] = t.logprob()
                     bp[(i, i)][nt] = Tree(nt, list(t.rhs()))
 
-        for l in range(1,n):
+        for l in range(1, n):
             for i in range(1, (n-l)+1):
                 j = i + l
-                pi[(i,j)] = {}
-                bp[(i,j)] = {}
+                pi[(i, j)] = {}
+                bp[(i, j)] = {}
 
                 for s in range(i, j):
                     pi_i_s = pi.get((i, s), None)
@@ -77,11 +78,11 @@ class CKYParser:
                                         if prob_pi_i_s is not None and prob_pi_s_j is not None:
                                             pi_i_j = prob + prob_pi_i_s + prob_pi_s_j
 
-                                            if x not in pi[(i,j)] or pi_i_j > pi[(i,j)][x]: # faltaria ver el empate
-                                                pi[(i,j)][x] = pi_i_j
-                                                bp[(i,j)][x] = Tree(x, [tree_bp_i_s,tree_bp_s_j])
+                                            if x not in pi[(i, j)] or pi_i_j > pi[(i, j)][x]:  # faltaria ver el empate
+                                                pi[(i, j)][x] = pi_i_j
+                                                bp[(i, j)][x] = Tree(x, [tree_bp_i_s, tree_bp_s_j])
 
-        lp = pi[(1,n)].get(str(start), float('-inf'))
-        tree = bp[(1,n)].get(str(start), None)
+        lp = pi[(1, n)].get(str(start), float('-inf'))
+        tree = bp[(1, n)].get(str(start), None)
 
         return (lp, tree)

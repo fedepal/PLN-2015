@@ -2,7 +2,8 @@ from nltk.grammar import induce_pcfg, Nonterminal
 from parsing.cky_parser import CKYParser
 from parsing.util import unlexicalize, lexicalize
 from nltk.tree import Tree
-import copy
+
+
 class UPCFG:
     """Unlexicalized PCFG.
     """
@@ -23,7 +24,7 @@ class UPCFG:
         pcfg = induce_pcfg(start=start, productions=prods)
         self._prods = pcfg.productions()
         self._parser = CKYParser(pcfg)
-        self._start = pcfg.start()  # Necesito start para construir el flat en parse
+        self._start = pcfg.start()  # start para construir el flat en parse
 
     def productions(self):
         """Returns the list of UPCFG probabilistic productions.
@@ -38,7 +39,8 @@ class UPCFG:
         sent, tags = zip(*tagged_sent)
         lp, tree = self._parser.parse(tags)
         if tree is None and lp == float('-inf'):
-            tree = Tree(self._start.symbol(), [Tree(tag, [word]) for word, tag in tagged_sent])
+            tree = Tree(self._start.symbol(),
+                        [Tree(tag, [word]) for word, tag in tagged_sent])
         else:
             tree = lexicalize(tree, sent)
             tree.un_chomsky_normal_form()

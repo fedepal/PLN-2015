@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     format_str = '{} {:3.1f}% ({}/{}) (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
     format_str2 = '{} (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
-    progress(format_str.format('',0.0, 0, n, 0.0, 0.0, 0.0))
+    progress(format_str.format('', 0.0, 0, n, 0.0, 0.0, 0.0))
     for i, gold_parsed_sent in enumerate(parsed_sents):
         if len(gold_parsed_sent.leaves()) <= m:
             tagged_sent = gold_parsed_sent.pos()
@@ -91,12 +91,11 @@ if __name__ == '__main__':
                                        n,
                                        prec,
                                        rec,
-                                       f1)
-                    +
+                                       f1) +
                      format_str2.format(' Unlabeled',
-                                       u_prec,
-                                       u_rec,
-                                       u_f1))
+                                        u_prec,
+                                        u_rec,
+                                        u_f1))
 
             if n_parsed_sents == n:
                 break
