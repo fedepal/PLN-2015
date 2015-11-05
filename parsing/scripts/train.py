@@ -2,16 +2,18 @@
 
 Usage:
   train.py [-m <model>] -o <file>
+  train.py -m upcfg [--horzMarkov=<n>] -o <file>
   train.py -h | --help
 
 Options:
-  -m <model>    Model to use [default: flat]:
-                  flat: Flat trees
-                  rbranch: Right branching trees
-                  lbranch: Left branching trees
-                  upcfg:
-  -o <file>     Output model file.
-  -h --help     Show this screen.
+  -m <model>        Model to use [default: flat]:
+                      flat: Flat trees
+                      rbranch: Right branching trees
+                      lbranch: Left branching trees
+                      upcfg: Unlexicalized PCFG
+  --horzmMarkov=<n>
+  -o <file>         Output model file.
+  -h --help         Show this screen.
 """
 from docopt import docopt
 import pickle
@@ -38,7 +40,11 @@ if __name__ == '__main__':
     corpus = SimpleAncoraCorpusReader('ancora/ancora-2.0/', files)
 
     print('Training model...')
-    model = models[opts['-m']](corpus.parsed_sents())
+    markov = opts['--horzMarkov']
+    if markov is not None:
+        model = models[opts['-m']](corpus.parsed_sents(), markov=int(markov))
+    else:
+        model = models[opts['-m']](corpus.parsed_sents())
 
     print('Saving...')
     filename = opts['-o']

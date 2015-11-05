@@ -15,10 +15,12 @@ class CKYParser:
         self._bp = {}
         term = self._term = []  # Producciones con terminales
         nonterm = self._nonterm = {}  # Producciones con no terminales
-
+        unaries = self._unaries = []  # Producciones con nonterm unarias
         for prod in grammar.productions():
             if prod.is_lexical():
                 term.append(prod)
+            elif(len(prod.rhs()) == 1):
+                unaries.append(prod)
             elif(len(prod.rhs()) == 2):
                 y = prod.rhs()[0].symbol()
                 z = prod.rhs()[1].symbol()
@@ -51,6 +53,10 @@ class CKYParser:
                     nt = t.lhs().symbol()
                     pi[(i, i)][nt] = t.logprob()
                     bp[(i, i)][nt] = Tree(nt, list(t.rhs()))
+            # Manejo de unarios
+            # added = True
+            # for p in unaries:
+            #     if
 
         for l in range(1, n):
             for i in range(1, (n-l)+1):

@@ -80,3 +80,70 @@ normal de Chomsky se la deshace para devolver un árbol desbinarizado.
 | real	1m56.380s
 | user	1m56.312s
 | sys	0m0.128s
+
+Ejercicio 4
+-----------
+
+**horzMarkov = 0**
+
+| Parsed 1444 sentences
+| Labeled
+|   Precision: 70.18%
+|   Recall: 69.95%
+|   F1: 70.06%
+| Unlabeled
+|   Precision: 72.04%
+|   Recall: 71.81%
+|   F1: 71.93%
+
+| real	1m1.155s
+| user	1m0.256s
+| sys	0m0.120s
+
+**horzMarkov = 1**
+
+| Parsed 1444 sentences
+| Labeled
+|   Precision: 74.71%
+|   Recall: 74.62%
+|   F1: 74.66%
+| Unlabeled
+|   Precision: 76.58%
+|   Recall: 76.48%
+|   F1: 76.53%
+
+| real	1m8.292s
+| user	1m8.236s
+| sys	0m0.076s
+
+**horzMarkov = 2**
+
+| Parsed 1444 sentences
+| Labeled
+|   Precision: 74.82%
+|   Recall: 74.30%
+|   F1: 74.56%
+| Unlabeled
+|   Precision: 76.74%
+|   Recall: 76.21%
+|   F1: 76.47%
+
+| real	1m35.672s
+| user	1m35.608s
+| sys	0m0.088s
+
+**horzMarkov = 3**
+
+| Parsed 1444 sentences
+| Labeled
+|   Precision: 73.97%
+|   Recall: 73.33%
+|   F1: 73.65%
+| Unlabeled
+|   Precision: 76.13%
+|   Recall: 75.47%
+|   F1: 75.80%
+
+| real	1m47.418s
+| user	1m47.336s
+| sys	0m0.128s
