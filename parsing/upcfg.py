@@ -18,7 +18,8 @@ class UPCFG:
             ntree = tree.copy(deep=True)
             unlexicalize(ntree)
             ntree.chomsky_normal_form(horzMarkov=markov)
-            ntree.collapse_unary(collapsePOS=True)
+            if not unary:
+                ntree.collapse_unary(collapsePOS=True)
             prods += ntree.productions()
 
         pcfg = induce_pcfg(start=start, productions=prods)

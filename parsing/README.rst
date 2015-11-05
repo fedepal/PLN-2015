@@ -147,3 +147,20 @@ Ejercicio 4
 | real	1m47.418s
 | user	1m47.336s
 | sys	0m0.128s
+
+Ejercicio 5
+-----------
+
+| Parsed 1444 sentences
+| Labeled
+|   Precision: 97.38%
+|   Recall: 14.62%
+|   F1: 25.42%
+| Unlabeled
+|   Precision: 97.58%
+|   Recall: 14.65%
+|   F1: 25.48%
+
+| real	0m24.281s
+| user	0m24.140s
+| sys	0m0.144s

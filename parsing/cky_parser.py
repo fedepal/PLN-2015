@@ -41,6 +41,7 @@ class CKYParser:
         n = len(sent)  # number of words in the sentence
         term = self._term
         nonterm = self._nonterm
+        unaries = self._unaries
         pi = self._pi
         bp = self._bp
         # Init
@@ -54,10 +55,19 @@ class CKYParser:
                     pi[(i, i)][nt] = t.logprob()
                     bp[(i, i)][nt] = Tree(nt, list(t.rhs()))
             # Manejo de unarios
-            # added = True
-            # for p in unaries:
-            #     if
-
+            added = True
+            while added:
+                added = False
+                for p in unaries:
+                    A = p.lhs().symbol()
+                    B = p.rhs()[0].symbol()
+                    if pi[(i,i)].get(B,None) is not None:
+                        prob = p.logprob() + pi[(i,i)][B]
+                        prob_l = pi[(i,i)].get(A)
+                        if prob > prob_l:
+                            pi[(i,i)][A] = prob
+                            bp[(i,i)][A].set_label(B)
+                            added = True
         for l in range(1, n):
             for i in range(1, (n-l)+1):
                 j = i + l
@@ -87,7 +97,20 @@ class CKYParser:
                                             if x not in pi[(i, j)] or pi_i_j > pi[(i, j)][x]:  # faltaria ver el empate
                                                 pi[(i, j)][x] = pi_i_j
                                                 bp[(i, j)][x] = Tree(x, [tree_bp_i_s, tree_bp_s_j])
-
+                # manejo de unarios
+                added = True
+                while added:
+                    added = False
+                    for p in unaries:
+                        A = p.lhs().symbol()
+                        B = p.rhs()[0].symbol()
+                        if pi[(i, j)].get(B, None) is not None:
+                            prob = pi[(i, j)][B] + p.logprob()
+                            prob_l = pi[(i,j)].get(A, None)
+                            if prob_l is not None and prob > prob_l:
+                                pi[(i,j)][A] = prob
+                                bp[(i,j)][A].set_label(B)
+                                added = True
         lp = pi[(1, n)].get(str(start), float('-inf'))
         tree = bp[(1, n)].get(str(start), None)
 

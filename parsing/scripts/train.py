@@ -2,7 +2,7 @@
 
 Usage:
   train.py [-m <model>] -o <file>
-  train.py -m upcfg [--horzMarkov=<n>] -o <file>
+  train.py -m upcfg [--horzMarkov=<n>] [-u | --unary]-o <file>
   train.py -h | --help
 
 Options:
@@ -12,6 +12,7 @@ Options:
                       lbranch: Left branching trees
                       upcfg: Unlexicalized PCFG
   --horzmMarkov=<n>
+  -u --unary        Unary productions in upcfg
   -o <file>         Output model file.
   -h --help         Show this screen.
 """
@@ -41,10 +42,20 @@ if __name__ == '__main__':
 
     print('Training model...')
     markov = opts['--horzMarkov']
-    if markov is not None:
-        model = models[opts['-m']](corpus.parsed_sents(), markov=int(markov))
+    m = opts['-m']
+    if m == 'upcfg':
+        if markov is not None:
+            model = models[m](corpus.parsed_sents(), markov=int(markov), unary=opts['-u'])
+        else:
+            model = models[m](corpus.parsed_sents(), unary=opts['--unary'])
+
     else:
-        model = models[opts['-m']](corpus.parsed_sents())
+        model = models[m](corpus.parsed_sents())
+
+    # if markov is not None:
+    #     model = models[opts['-m']](corpus.parsed_sents(), markov=int(markov))
+    # else:
+    #     model = models[opts['-m']](corpus.parsed_sents())
 
     print('Saving...')
     filename = opts['-o']
