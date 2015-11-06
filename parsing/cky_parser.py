@@ -63,10 +63,10 @@ class CKYParser:
                     B = p.rhs()[0].symbol()
                     if pi[(i,i)].get(B,None) is not None:
                         prob = p.logprob() + pi[(i,i)][B]
-                        prob_l = pi[(i,i)].get(A)
+                        prob_l = pi[(i,i)].get(A, float('-inf'))
                         if prob > prob_l:
                             pi[(i,i)][A] = prob
-                            bp[(i,i)][A].set_label(B)
+                            bp[(i,i)][A] = Tree(A, [bp[(i, i)][B]])
                             added = True
         for l in range(1, n):
             for i in range(1, (n-l)+1):
@@ -106,10 +106,10 @@ class CKYParser:
                         B = p.rhs()[0].symbol()
                         if pi[(i, j)].get(B, None) is not None:
                             prob = pi[(i, j)][B] + p.logprob()
-                            prob_l = pi[(i,j)].get(A, None)
-                            if prob_l is not None and prob > prob_l:
+                            prob_l = pi[(i,j)].get(A, float('-inf'))
+                            if prob > prob_l:
                                 pi[(i,j)][A] = prob
-                                bp[(i,j)][A].set_label(B)
+                                bp[(i,j)][A] = Tree(A, [bp[(i, j)][B]])
                                 added = True
         lp = pi[(1, n)].get(str(start), float('-inf'))
         tree = bp[(1, n)].get(str(start), None)

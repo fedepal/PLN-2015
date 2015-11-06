@@ -43,11 +43,14 @@ if __name__ == '__main__':
     print('Training model...')
     markov = opts['--horzMarkov']
     m = opts['-m']
+    unary=opts['--unary']
     if m == 'upcfg':
         if markov is not None:
-            model = models[m](corpus.parsed_sents(), markov=int(markov), unary=opts['-u'])
+            print("UPCFG with Markov order {} and Unary productions = {}".format(markov, unary))
+            model = models[m](corpus.parsed_sents(), horzMarkov=int(markov), unary=unary)
         else:
-            model = models[m](corpus.parsed_sents(), unary=opts['--unary'])
+            print("UPCFG with Unary productions = {}".format(unary))
+            model = models[m](corpus.parsed_sents(), unary=unary)
 
     else:
         model = models[m](corpus.parsed_sents())

@@ -8,7 +8,7 @@ class UPCFG:
     """Unlexicalized PCFG.
     """
 
-    def __init__(self, parsed_sents, start='sentence', markov=None, unary=False):
+    def __init__(self, parsed_sents, start='sentence', horzMarkov=None, unary=False):
         """
         parsed_sents -- list of training trees.
         """
@@ -17,7 +17,7 @@ class UPCFG:
         for tree in parsed_sents:
             ntree = tree.copy(deep=True)
             unlexicalize(ntree)
-            ntree.chomsky_normal_form(horzMarkov=markov)
+            ntree.chomsky_normal_form(horzMarkov=horzMarkov)
             if not unary:
                 ntree.collapse_unary(collapsePOS=True)
             prods += ntree.productions()
@@ -43,6 +43,7 @@ class UPCFG:
             tree = Tree(self._start.symbol(),
                         [Tree(tag, [word]) for word, tag in tagged_sent])
         else:
-            tree = lexicalize(tree, sent)
             tree.un_chomsky_normal_form()
+            tree = lexicalize(tree, sent)
+
         return tree
