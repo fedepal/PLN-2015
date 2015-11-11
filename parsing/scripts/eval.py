@@ -45,8 +45,9 @@ if __name__ == '__main__':
     hits, total_gold, total_model, u_hits = 0, 0, 0, 0
     n_parsed_sents = 0
     n = int(opts['-n'])
+    l_parsed_sents = len(parsed_sents)
     if n == 0:
-        n = len(parsed_sents)
+        n = l_parsed_sents
     m = opts['-m']
     if m is not None:
         m = int(m)
@@ -86,8 +87,8 @@ if __name__ == '__main__':
             u_f1 = 2 * u_prec * u_rec / (u_prec + u_rec)
 
             progress(format_str.format('Labeled',
-                                       float(i+1) * 100 / n,
-                                       i+1,
+                                       float(i+1) * 100 / l_parsed_sents,
+                                       n_parsed_sents,
                                        n,
                                        prec,
                                        rec,

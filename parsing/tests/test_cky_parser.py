@@ -239,7 +239,7 @@ class TestCKYParser(TestCase):
             (1, 5): {'S':
                      log2(1.0) +  # rule S -> NP VP
                      log2(0.6 * 1.0 * 0.9) +  # left part
-                     log2(1.0) + log2(1.0) + log2(0.4 * 0.1 * 1.0)},  # right part
+                     log2(1.0) + log2(1.0) + log2(0.4 * 0.1 * 1.0)},  # R part
         }
         self.assertEqualPi(parser._pi, pi)
 
@@ -297,3 +297,207 @@ class TestCKYParser(TestCase):
                 prob1 = d1[k2]
                 prob2 = d2[k2]
                 self.assertAlmostEqual(prob1, prob2)
+
+    def test_unaries(self):
+        grammar = PCFG.fromstring(
+            """
+                S -> NP VP [0.9]
+                S -> VP  [0.1]
+                VP -> V NP [0.5]
+                VP -> V  [0.1]
+                VP -> V VP_V [0.3]
+                VP -> V PP [0.1]
+                VP_V -> NP PP [1.0]
+                NP -> NP NP [0.1]
+                NP -> NP PP [0.2]
+                NP -> N  [0.7]
+                PP -> P NP [1.0]
+                N -> 'people' [0.5]
+                N -> 'fish'   [0.2]
+                N -> 'tanks'  [0.2]
+                N -> 'rods'  [0.1]
+                V -> 'people'  [0.1]
+                V -> 'fish'    [0.6]
+                V -> 'tanks'   [0.3]
+                P -> 'with'  [1.0]
+            """)
+        parser = CKYParser(grammar)
+
+        lp, t = parser.parse('fish people fish tanks'.split())
+
+        pi = {
+            (1, 1): {'N': log2(0.2),
+                     'NP': log2(0.14),
+                     'S': log2(0.006),
+                     'V': log2(0.6),
+                     'VP': log2(0.06)
+                     },
+            (1, 2): {'NP': log2(0.0049),
+                     'S': log2(0.0105),
+                     'VP': log2(0.105)
+                     },
+            (1, 3): {'NP': log2(0.0000686),
+                     'S': log2(0.000882),
+                     'VP': log2(0.00147)
+                     },
+            (1, 4): {'NP': log2(0.0000009604),
+                     'S': log2(0.00018522),
+                     'VP': log2(0.00002058)
+                     },
+            (2, 2): {'N': log2(0.5),
+                     'NP': log2(0.35),
+                     'S': log2(0.001),
+                     'V': log2(0.1),
+                     'VP': log2(0.01)
+                     },
+            (2, 3): {'NP': log2(0.0049),
+                     'S': log2(0.0189),
+                     'VP': log2(0.007)
+                     },
+            (2, 4): {'NP': log2(0.0000686),
+                     'S': log2(0.01323),
+                     'VP': log2(0.000098)
+                     },
+            (3, 3): {'N': log2(0.2),
+                     'NP': log2(0.14),
+                     'S': log2(0.006),
+                     'V': log2(0.6),
+                     'VP': log2(0.06)
+                     },
+            (3, 4): {'NP': log2(0.00196),
+                     'S': log2(0.0042),
+                     'VP': log2(0.042)
+                     },
+            (4, 4): {'N': log2(0.2),
+                     'NP': log2(0.14),
+                     'S': log2(0.003),
+                     'V': log2(0.3),
+                     'VP': log2(0.03)
+                     }
+            }
+
+        bp = {
+            (1, 1): {'N': Tree('N', ['fish']),
+                     'NP': Tree('NP', [Tree('N', ['fish'])]),
+                     'S': Tree('S', [Tree('VP', [Tree('V', ['fish'])])]),
+                     'V': Tree('V', ['fish']),
+                     'VP': Tree('VP', [Tree('V', ['fish'])])
+                     },
+            (1, 2): {'NP': Tree('NP',
+                                [Tree('NP', [Tree('N', ['fish'])]),
+                                 Tree('NP', [Tree('N', ['people'])])]),
+                     'S': Tree('S',
+                               [Tree('VP', [Tree('V', ['fish']),
+                                Tree('NP', [Tree('N', ['people'])])])]),
+                     'VP': Tree('VP',
+                                [Tree('V', ['fish']),
+                                 Tree('NP', [Tree('N', ['people'])])])
+                     },
+            (1, 3): {'NP': Tree('NP',
+                                [Tree('NP',
+                                      [Tree('NP', [Tree('N', ['fish'])]),
+                                       Tree('NP', [Tree('N', ['people'])])]),
+                                 Tree('NP', [Tree('N', ['fish'])])]),
+                     'S': Tree('S',
+                               [Tree('NP', [Tree('N', ['fish'])]),
+                                Tree('VP', [Tree('V', ['people']),
+                                     Tree('NP', [Tree('N', ['fish'])])])]),
+                     'VP': Tree('VP',
+                                [Tree('V', ['fish']),
+                                 Tree('NP',
+                                 [Tree('NP', [Tree('N', ['people'])]),
+                                  Tree('NP', [Tree('N', ['fish'])])])])
+                     },
+            (1, 4): {'NP': Tree('NP',
+                                [Tree('NP', [Tree('N', ['fish'])]),
+                                 Tree('NP',
+                                      [Tree('NP',
+                                            [Tree('NP',
+                                                  [Tree('N', ['people'])]),
+                                             Tree('NP',
+                                                  [Tree('N', ['fish'])])]),
+                                       Tree('NP', [Tree('N', ['tanks'])])])]),
+                     'S': Tree('S',
+                               [Tree('NP',
+                                     [Tree('NP', [Tree('N', ['fish'])]),
+                                      Tree('NP', [Tree('N', ['people'])])]),
+                                Tree('VP', [Tree('V', ['fish']),
+                                     Tree('NP', [Tree('N', ['tanks'])])])]),
+                     'VP': Tree('VP',
+                                [Tree('V', ['fish']),
+                                 Tree('NP',
+                                      [Tree('NP',
+                                            [Tree('NP',
+                                                  [Tree('N', ['people'])]),
+                                             Tree('NP',
+                                                  [Tree('N', ['fish'])])]),
+                                       Tree('NP', [Tree('N', ['tanks'])])])])
+                     },
+            (2, 2): {'N': Tree('N', ['people']),
+                     'NP': Tree('NP', [Tree('N', ['people'])]),
+                     'S': Tree('S', [Tree('VP', [Tree('V', ['people'])])]),
+                     'V': Tree('V', ['people']),
+                     'VP': Tree('VP', [Tree('V', ['people'])])
+                     },
+            (2, 3): {'NP': Tree('NP',
+                                [Tree('NP', [Tree('N', ['people'])]),
+                                 Tree('NP', [Tree('N', ['fish'])])]),
+                     'S': Tree('S',
+                               [Tree('NP', [Tree('N', ['people'])]),
+                                Tree('VP', [Tree('V', ['fish'])])]),
+                     'VP': Tree('VP',
+                                [Tree('V', ['people']),
+                                 Tree('NP', [Tree('N', ['fish'])])])
+                     },
+            (2, 4): {'NP': Tree('NP',
+                                [Tree('NP',
+                                      [Tree('NP', [Tree('N', ['people'])]),
+                                       Tree('NP', [Tree('N', ['fish'])])]),
+                                 Tree('NP', [Tree('N', ['tanks'])])]),
+                     'S': Tree('S',
+                               [Tree('NP', [Tree('N', ['people'])]),
+                                Tree('VP', [Tree('V', ['fish']),
+                                     Tree('NP', [Tree('N', ['tanks'])])])]),
+                     'VP': Tree('VP',
+                                [Tree('V', ['people']),
+                                 Tree('NP',
+                                      [Tree('NP', [Tree('N', ['fish'])]),
+                                       Tree('NP', [Tree('N', ['tanks'])])])])
+                     },
+            (3, 3): {'N': Tree('N', ['fish']),
+                     'NP': Tree('NP', [Tree('N', ['fish'])]),
+                     'S': Tree('S', [Tree('VP', [Tree('V', ['fish'])])]),
+                     'V': Tree('V', ['fish']),
+                     'VP': Tree('VP', [Tree('V', ['fish'])])
+                     },
+            (3, 4): {'NP': Tree('NP',
+                                [Tree('NP', [Tree('N', ['fish'])]),
+                                 Tree('NP', [Tree('N', ['tanks'])])]),
+                     'S': Tree('S',
+                               [Tree('VP', [Tree('V', ['fish']),
+                                Tree('NP', [Tree('N', ['tanks'])])])]),
+                     'VP': Tree('VP',
+                                [Tree('V', ['fish']),
+                                 Tree('NP', [Tree('N', ['tanks'])])])
+                     },
+            (4, 4): {'N': Tree('N', ['tanks']),
+                     'NP': Tree('NP', [Tree('N', ['tanks'])]),
+                     'S': Tree('S', [Tree('VP', [Tree('V', ['tanks'])])]),
+                     'V': Tree('V', ['tanks']),
+                     'VP': Tree('VP', [Tree('V', ['tanks'])])
+                     }
+            }
+
+        t2 = Tree('S',
+                  [Tree('NP', [Tree('NP', [Tree('N', ['fish'])]),
+                        Tree('NP', [Tree('N', ['people'])])]),
+                   Tree('VP', [Tree('V', ['fish']),
+                        Tree('NP', [Tree('N', ['tanks'])])])])
+
+        self.assertAlmostEqual(lp,
+                               log2(0.9 * 0.1 * 0.7 *
+                                    0.2 * 0.7 * 0.5 *
+                                    0.5 * 0.6 * 0.7 * 0.2))
+        self.assertEqual(t, t2)
+        self.assertEqual(parser._bp, bp)
+        self.assertEqualPi(parser._pi, pi)

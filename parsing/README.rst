@@ -69,17 +69,18 @@ normal de Chomsky se la deshace para devolver un árbol desbinarizado.
 | Parsed **1444** sentences
 
 | Labeled
-|  Precision: 73.11%
-|  Recall: 72.81%
-|  F1: 72.96%
+|   Precision: 72.97%
+|   Recall: 72.92%
+|   F1: 72.95%
 | Unlabeled
-|  Precision: 75.22%
-|  Recall: 74.91%
-|  F1: 75.06%
+|   Precision: 75.19%
+|   Recall: 75.14%
+|   F1: 75.17%
 
-| real	1m56.380s
-| user	1m56.312s
-| sys	0m0.128s
+| real	1m58.124s
+| user	1m57.956s
+| sys	0m0.224s
+
 
 Ejercicio 4
 -----------
@@ -88,79 +89,81 @@ Ejercicio 4
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 70.18%
-|   Recall: 69.95%
-|   F1: 70.06%
+|   Precision: 70.20%
+|   Recall: 69.94%
+|   F1: 70.07%
 | Unlabeled
-|   Precision: 72.04%
-|   Recall: 71.81%
-|   F1: 71.93%
+|   Precision: 72.08%
+|   Recall: 71.82%
+|   F1: 71.95%
 
-| real	1m1.155s
-| user	1m0.256s
-| sys	0m0.120s
+| real	0m59.200s
+| user	0m59.180s
+| sys	0m0.040s
+
 
 **horzMarkov = 1**
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 74.71%
-|   Recall: 74.62%
-|   F1: 74.66%
+|   Precision: 74.62%
+|   Recall: 74.58%
+|   F1: 74.60%
 | Unlabeled
-|   Precision: 76.58%
-|   Recall: 76.48%
+|   Precision: 76.55%
+|   Recall: 76.50%
 |   F1: 76.53%
 
-| real	1m8.292s
-| user	1m8.236s
-| sys	0m0.076s
+| real	1m12.190s
+| user	1m11.920s
+| sys	0m0.300s
 
 **horzMarkov = 2**
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 74.82%
-|   Recall: 74.30%
-|   F1: 74.56%
+|   Precision: 74.76%
+|   Recall: 74.33%
+|   F1: 74.55%
 | Unlabeled
-|   Precision: 76.74%
-|   Recall: 76.21%
-|   F1: 76.47%
+|   Precision: 76.78%
+|   Recall: 76.34%
+|   F1: 76.56%
 
-| real	1m35.672s
-| user	1m35.608s
-| sys	0m0.088s
+| real	1m42.013s
+| user	1m41.860s
+| sys	0m0.200s
+
 
 **horzMarkov = 3**
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 73.97%
-|   Recall: 73.33%
-|   F1: 73.65%
+|   Precision: 73.89%
+|   Recall: 73.43%
+|   F1: 73.66%
 | Unlabeled
-|   Precision: 76.13%
-|   Recall: 75.47%
-|   F1: 75.80%
+|   Precision: 76.20%
+|   Recall: 75.73%
+|   F1: 75.96%
 
-| real	1m47.418s
-| user	1m47.336s
-| sys	0m0.128s
+| real	1m56.776s
+| user	1m55.028s
+| sys	0m1.800s
 
 Ejercicio 5
 -----------
 
-| Parsed 1444 sentences
+| Parsed 100 sentences
 | Labeled
-|   Precision: 97.38%
-|   Recall: 14.62%
-|   F1: 25.42%
+|   Precision: 24.50%
+|   Recall: 31.99%
+|   F1: 27.75%
 | Unlabeled
-|   Precision: 97.58%
-|   Recall: 14.65%
-|   F1: 25.48%
+|   Precision: 30.74%
+|   Recall: 40.15%
+|   F1: 34.82%
 
-| real	0m24.281s
-| user	0m24.140s
-| sys	0m0.144s
+| real	20m39.049s
+| user	20m39.420s
+| sys	0m0.352s

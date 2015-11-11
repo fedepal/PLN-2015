@@ -2,7 +2,7 @@
 
 Usage:
   train.py [-m <model>] -o <file>
-  train.py -m upcfg [--horzMarkov=<n>] [-u | --unary]-o <file>
+  train.py -m upcfg [--horzMarkov=<n>] [-u | --unary] -o <file>
   train.py -h | --help
 
 Options:
@@ -11,7 +11,7 @@ Options:
                       rbranch: Right branching trees
                       lbranch: Left branching trees
                       upcfg: Unlexicalized PCFG
-  --horzmMarkov=<n>
+  --horzmMarkov=<n> Use Markov n
   -u --unary        Unary productions in upcfg
   -o <file>         Output model file.
   -h --help         Show this screen.
@@ -43,11 +43,14 @@ if __name__ == '__main__':
     print('Training model...')
     markov = opts['--horzMarkov']
     m = opts['-m']
-    unary=opts['--unary']
+    unary = opts['--unary']
     if m == 'upcfg':
         if markov is not None:
-            print("UPCFG with Markov order {} and Unary productions = {}".format(markov, unary))
-            model = models[m](corpus.parsed_sents(), horzMarkov=int(markov), unary=unary)
+            print("UPCFG with Markov order {} \
+                   and Unary productions = {}".format(markov, unary))
+            model = models[m](corpus.parsed_sents(),
+                              horzMarkov=int(markov),
+                              unary=unary)
         else:
             print("UPCFG with Unary productions = {}".format(unary))
             model = models[m](corpus.parsed_sents(), unary=unary)
