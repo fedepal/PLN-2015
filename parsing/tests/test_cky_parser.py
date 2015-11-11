@@ -375,7 +375,7 @@ class TestCKYParser(TestCase):
                      'VP': log2(0.03)
                      }
             }
-        print(parser._pi)
+
         bp = {
             (1, 1): {'N': Tree('N', ['fish']),
                      'NP': Tree('NP', [Tree('N', ['fish'])]),

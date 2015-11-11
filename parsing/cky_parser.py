@@ -3,7 +3,7 @@ from nltk.tree import Tree
 
 class CKYParser:
 
-    def __init__(self, grammar):
+    def __init__(self, grammar, unary=False):
         """
         grammar -- a binarised NLTK PCFG.
         """
@@ -13,6 +13,7 @@ class CKYParser:
         self.grammar = grammar
         self._pi = {}
         self._bp = {}
+        self._unary = unary
         term = self._term = {}  # Producciones con terminales
         nonterm = self._nonterm = {}  # Producciones con no terminales
         unaries = self._unaries = {}  # Producciones con nonterm unarias
@@ -55,6 +56,7 @@ class CKYParser:
         unaries = self._unaries
         pi = self._pi
         bp = self._bp
+        unary = self._unary
         # Init
         for i in range(1, n+1):
             pi[(i, i)] = {}
@@ -65,7 +67,7 @@ class CKYParser:
                 pi[i, i][nt] = t[1]
                 bp[i, i][nt] = Tree(nt, [sent[i-1]])
                 added = True
-                while added:
+                while unary and added:
                     added = False
                     nts = list(pi[i, i].keys())
                     for nt in nts:
@@ -115,7 +117,7 @@ class CKYParser:
                                             bp[(i, j)][x] = Tree(x, [tree_bp_i_s, tree_bp_s_j])
                                             # Manejo de unarios
                                             added = True
-                                            while added:
+                                            while unary and added:
                                                 added = False
                                                 nts = list(pi[i, j].keys())
                                                 for nt in nts:

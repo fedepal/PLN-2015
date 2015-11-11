@@ -52,6 +52,12 @@ hacerlo más eficiente no recorro todos los no terminales sino que solo busco
 en el diccionario de no terminales aquellos que tengan en la parte derecha al
 no terminal del subarbol izquiero y derecho respectivamente.
 
+Para el caso de la amibigüedad, se parsea la frase "the man saw the dog with
+the telescope", se crea una gramática probabilistica a partir de una lista de
+producciones con probabilidad. Y se parsea a partir de esta gramática. Luego
+se comparan que el árbol sea el correcto, la probabilidad sea la correcta
+y se compara que pi y bp sean correctos.
+
 Ejercicio 3
 -----------
 Para la UPCFG en el init recorro la lista de árboles, los deslexicalizo y
@@ -69,13 +75,14 @@ normal de Chomsky se la deshace para devolver un árbol desbinarizado.
 | Parsed **1444** sentences
 
 | Labeled
-|   Precision: 72.97%
-|   Recall: 72.92%
-|   F1: 72.95%
+|   Precision: 73.14%
+|   Recall: 72.84%
+|   F1: 72.99%
 | Unlabeled
-|   Precision: 75.19%
-|   Recall: 75.14%
-|   F1: 75.17%
+|   Precision: 75.25%
+|   Recall: 74.94%
+|   F1: 75.09%
+
 
 | real	1m58.124s
 | user	1m57.956s
@@ -84,18 +91,22 @@ normal de Chomsky se la deshace para devolver un árbol desbinarizado.
 
 Ejercicio 4
 -----------
+Con solo agregar horzMarkov como parametro de la clase UPCFG y utlizarlo en la
+función chomsky_normal_form, obtenemos los árboles binarizados y con
+markovizacion horizontal.
 
 **horzMarkov = 0**
 
 | Parsed 1444 sentences
-| Labeled
-|   Precision: 70.20%
-|   Recall: 69.94%
-|   F1: 70.07%
-| Unlabeled
-|   Precision: 72.08%
-|   Recall: 71.82%
-|   F1: 71.95%
+|Labeled
+|   Precision: 70.18%
+|   Recall: 69.95%
+|   F1: 70.06%
+|Unlabeled
+|   Precision: 72.04%
+|   Recall: 71.81%
+|   F1: 71.93%
+
 
 | real	0m59.200s
 | user	0m59.180s
@@ -106,13 +117,13 @@ Ejercicio 4
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 74.62%
-|   Recall: 74.58%
-|   F1: 74.60%
+|   Precision: 70.00%
+|   Recall: 77.78%
+|   F1: 73.68%
 | Unlabeled
-|   Precision: 76.55%
-|   Recall: 76.50%
-|   F1: 76.53%
+|   Precision: 70.00%
+|   Recall: 77.78%
+|   F1: 73.68%
 
 | real	1m12.190s
 | user	1m11.920s
@@ -122,13 +133,13 @@ Ejercicio 4
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 74.76%
-|   Recall: 74.33%
-|   F1: 74.55%
+|   Precision: 74.82%
+|   Recall: 74.30%
+|   F1: 74.56%
 | Unlabeled
-|   Precision: 76.78%
-|   Recall: 76.34%
-|   F1: 76.56%
+|   Precision: 76.74%
+|   Recall: 76.21%
+|   F1: 76.47%
 
 | real	1m42.013s
 | user	1m41.860s
@@ -139,13 +150,14 @@ Ejercicio 4
 
 | Parsed 1444 sentences
 | Labeled
-|   Precision: 73.89%
-|   Recall: 73.43%
-|   F1: 73.66%
+|   Precision: 73.95%
+|   Recall: 73.31%
+|   F1: 73.63%
 | Unlabeled
-|   Precision: 76.20%
-|   Recall: 75.73%
-|   F1: 75.96%
+|   Precision: 76.11%
+|   Recall: 75.45%
+|   F1: 75.78%
+
 
 | real	1m56.776s
 | user	1m55.028s
@@ -153,13 +165,48 @@ Ejercicio 4
 
 Ejercicio 5
 -----------
+Agregue el flag unary, a UPCFG para cuando sea True no llamar a collapse_unary,
+y se lo paso también a CKYParser ya que el manejo de unarios baja la performance
+del parser.
+Se agregó un test, en test_cky_parser, que testee el correcto parseo de una
+gramática con producciones unarias.
 
-| Parsed 1 sentences
+Es muy lento el algorítmo en comparación a un cky sin manejo de unarios, por el
+bucle while, porque por cada No Terminal(nt) que esta en pi(i,j), se busca en un
+diccionario si nt es parte derecha, luego se itera sobre la lista de producciones
+unarias talque nt es parte derecha y se busca una probabilidad máxima. Y si se
+encuentra está probabilidad máxima se realiza nuevamente todo el bucle while.
+Haciendo profiling, con un árbol se ve que 203762 veces se agrega o se reemplaza
+un elemento en pi, y buscando unarios a lo anterior se le suman 8177677 veces
+que se modifica pi.
+
+**UPCFG con unarios**
+
+| Parsed 100 sentences
 | Labeled
-|   Precision: 70.00%
-|   Recall: 77.78%
-|   F1: 73.68%
+|   Precision: 68.37%
+|   Recall: 68.88%
+|   F1: 68.63%
 | Unlabeled
-|   Precision: 70.00%
-|   Recall: 77.78%
-|   F1: 73.68%
+|   Precision: 71.61%
+|   Recall: 72.15%
+|   F1: 71.88%
+
+| real	82m45.370s
+| user	82m47.452s
+| sys	0m0.916s
+
+**UPCFG sin unarios**
+| Parsed 100 sentences
+| Labeled
+|   Precision: 72.70%
+|   Recall: 73.53%
+|   F1: 73.11%
+| Unlabeled
+|   Precision: 75.19%
+|   Recall: 76.04%
+|   F1: 75.61%
+
+| real	0m21.348s
+| user	0m21.272s
+| sys	0m0.084s

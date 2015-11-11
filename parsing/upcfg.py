@@ -25,7 +25,7 @@ class UPCFG:
 
         pcfg = induce_pcfg(start=start, productions=prods)
         self._prods = pcfg.productions()
-        self._parser = CKYParser(pcfg)
+        self._parser = CKYParser(pcfg, unary)
         self._start = pcfg.start()  # start para construir el flat en parse
 
     def productions(self):
