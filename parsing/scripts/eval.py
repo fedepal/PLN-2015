@@ -51,7 +51,7 @@ if __name__ == '__main__':
     m = opts['-m']
     if m is not None:
         m = int(m)
-        print("Parsing sents only with length < 20")
+        print("Parsing sents only with length < {}".format(m))
     else:
         m = float('inf')
 

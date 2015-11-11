@@ -375,7 +375,7 @@ class TestCKYParser(TestCase):
                      'VP': log2(0.03)
                      }
             }
-
+        print(parser._pi)
         bp = {
             (1, 1): {'N': Tree('N', ['fish']),
                      'NP': Tree('NP', [Tree('N', ['fish'])]),
@@ -493,11 +493,11 @@ class TestCKYParser(TestCase):
                         Tree('NP', [Tree('N', ['people'])])]),
                    Tree('VP', [Tree('V', ['fish']),
                         Tree('NP', [Tree('N', ['tanks'])])])])
-
+        self.maxDiff = None
+        self.assertEqualPi(parser._pi, pi)
+        self.assertEqual(parser._bp, bp)
+        self.assertEqual(t, t2)
         self.assertAlmostEqual(lp,
                                log2(0.9 * 0.1 * 0.7 *
                                     0.2 * 0.7 * 0.5 *
                                     0.5 * 0.6 * 0.7 * 0.2))
-        self.assertEqual(t, t2)
-        self.assertEqual(parser._bp, bp)
-        self.assertEqualPi(parser._pi, pi)

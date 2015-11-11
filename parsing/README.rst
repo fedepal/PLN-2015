@@ -154,16 +154,12 @@ Ejercicio 4
 Ejercicio 5
 -----------
 
-| Parsed 100 sentences
+| Parsed 1 sentences
 | Labeled
-|   Precision: 24.50%
-|   Recall: 31.99%
-|   F1: 27.75%
+|   Precision: 70.00%
+|   Recall: 77.78%
+|   F1: 73.68%
 | Unlabeled
-|   Precision: 30.74%
-|   Recall: 40.15%
-|   F1: 34.82%
-
-| real	20m39.049s
-| user	20m39.420s
-| sys	0m0.352s
+|   Precision: 70.00%
+|   Recall: 77.78%
+|   F1: 73.68%
