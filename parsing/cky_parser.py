@@ -59,9 +59,9 @@ class CKYParser:
         unary = self._unary
         # Init
         for i in range(1, n+1):
-            pi[(i, i)] = {}
-            bp[(i, i)] = {}
-            ts = term.get(sent[i-1],[])
+            pi[i, i] = {}
+            bp[i, i] = {}
+            ts = term.get(sent[i-1], [])
             for t in ts:
                 nt = t[0]
                 pi[i, i][nt] = t[1]
@@ -73,7 +73,7 @@ class CKYParser:
                     for nt in nts:
                         uns = unaries.get(nt, [])
                         for A, pA_B in uns:
-                            prob = pA_B + pi[i,i][nt]
+                            prob = pA_B + pi[i, i][nt]
                             Aprob = pi[i, i].get(A, None)
                             if Aprob is None or prob > Aprob:
                                 pi[i, i][A] = prob
@@ -83,8 +83,8 @@ class CKYParser:
         for l in range(1, n):
             for i in range(1, (n-l)+1):
                 j = i + l
-                pi[(i, j)] = {}
-                bp[(i, j)] = {}
+                pi[i, j] = {}
+                bp[i, j] = {}
                 for s in range(i, j):
                     # Obtenemos los valores anteriores de pi y bp
                     pi_i_s = pi.get((i, s), None)
@@ -111,10 +111,11 @@ class CKYParser:
                                     if prob_pi_i_s is not None and prob_pi_s_j is not None:
                                         # Calculamos pi(i,j)
                                         pi_i_j = prob + prob_pi_i_s + prob_pi_s_j
-                                        if x not in pi[(i, j)] or pi_i_j > pi[(i, j)][x]:  # faltaria ver el empate
+                                        if x not in pi[i, j] or pi_i_j > pi[i, j][x]:
+                                            # faltaria ver el empate
                                             # Nos quedamos con el máximo
-                                            pi[(i, j)][x] = pi_i_j
-                                            bp[(i, j)][x] = Tree(x, [tree_bp_i_s, tree_bp_s_j])
+                                            pi[i, j][x] = pi_i_j
+                                            bp[i, j][x] = Tree(x, [tree_bp_i_s, tree_bp_s_j])
                                             # Manejo de unarios
                                             added = True
                                             while unary and added:
@@ -123,13 +124,12 @@ class CKYParser:
                                                 for nt in nts:
                                                     uns = unaries.get(nt, [])
                                                     for A, pA_B in uns:
-                                                        prob = pA_B + pi[i,j][nt]
+                                                        prob = pA_B + pi[i, j][nt]
                                                         Aprob = pi[i, j].get(A, None)
                                                         if Aprob is None or prob > Aprob:
                                                             pi[i, j][A] = prob
                                                             bp[i, j][A] = Tree(A, [bp[i, j][nt]])
                                                             added = True
-
 
         lp = pi[(1, n)].get(str(start), float('-inf'))
         tree = bp[(1, n)].get(str(start), None)
