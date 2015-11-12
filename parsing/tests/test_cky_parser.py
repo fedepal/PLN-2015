@@ -321,7 +321,7 @@ class TestCKYParser(TestCase):
                 V -> 'tanks'   [0.3]
                 P -> 'with'  [1.0]
             """)
-        parser = CKYParser(grammar)
+        parser = CKYParser(grammar, True)
 
         lp, t = parser.parse('fish people fish tanks'.split())
 
