@@ -45,18 +45,19 @@ if __name__ == '__main__':
     hits, total_gold, total_model, u_hits = 0, 0, 0, 0
     n_parsed_sents = 0
     n = int(opts['-n'])
+    l_parsed_sents = len(parsed_sents)
     if n == 0:
-        n = len(parsed_sents)
+        n = l_parsed_sents
     m = opts['-m']
     if m is not None:
         m = int(m)
-        print("Parsing sents only with length < 20")
+        print("Parsing sents only with length < {}".format(m))
     else:
         m = float('inf')
 
     format_str = '{} {:3.1f}% ({}/{}) (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
     format_str2 = '{} (P={:2.2f}%, R={:2.2f}%, F1={:2.2f}%)'
-    progress(format_str.format('',0.0, 0, n, 0.0, 0.0, 0.0))
+    progress(format_str.format('', 0.0, 0, n, 0.0, 0.0, 0.0))
     for i, gold_parsed_sent in enumerate(parsed_sents):
         if len(gold_parsed_sent.leaves()) <= m:
             tagged_sent = gold_parsed_sent.pos()
@@ -86,17 +87,16 @@ if __name__ == '__main__':
             u_f1 = 2 * u_prec * u_rec / (u_prec + u_rec)
 
             progress(format_str.format('Labeled',
-                                       float(i+1) * 100 / n,
-                                       i+1,
+                                       float(i+1) * 100 / l_parsed_sents,
+                                       n_parsed_sents,
                                        n,
                                        prec,
                                        rec,
-                                       f1)
-                    +
+                                       f1) +
                      format_str2.format(' Unlabeled',
-                                       u_prec,
-                                       u_rec,
-                                       u_f1))
+                                        u_prec,
+                                        u_rec,
+                                        u_f1))
 
             if n_parsed_sents == n:
                 break
