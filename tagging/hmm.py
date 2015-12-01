@@ -183,37 +183,24 @@ class MLHMM(HMM):
         self.addone = addone
         self.n = n
 
-        # Count de (word,tag), pasamos de una lista de listas a lista.
-        list_ta_se = list(chain.from_iterable(tagged_sents))
-        self.word_tag_counts = Counter(list_ta_se)
-        self.word_tag_counts = dict(self.word_tag_counts)
-
-        words, tags = zip(*list_ta_se)
-        self.tag_counts_1 = Counter(tags)  # Counts tamaño 1
-        # agregamos el conteo de <s>
-        self.tag_counts_1['<s>'] = (n-1) * len(tagged_sents)
-
+        self.word_tag_counts = defaultdict(lambda: defaultdict(int))
+        word_tag_counts = self.word_tag_counts
+        self.tag_counts_1 = defaultdict(int)  # Counts tamaño 1
+        tag_counts_1 = self.tag_counts_1
         self.tag_counts = defaultdict(int)  # Counts tamaño n y n-1
         tag_counts = self.tag_counts
-
-        # tagset
-        self.t_set = list(self.tag_counts_1.keys())
-        # wordset
-        self.w_set, t = zip(*list(self.word_tag_counts.keys()))
-        t = None
-        self.w_set = set(self.w_set)
-        # tamaño vocabulario
-        self.V = len(self.w_set)
-        list_ta_se = None
-
+        w_set = set()
         # Contar tags tamaño n y n-1
-        empty_sents = 0
         for sent in tagged_sents:
             if sent != []:
                 words, tags = zip(*sent)
-                # Contar las words tambien
-                words = None
+                words = list(words)
                 tags = list(tags)
+                for i in range(len(sent)):
+                    word_tag_counts[tags[i]][words[i]] += 1
+                    tag_counts_1[tags[i]] += 1
+                    w_set.add(words[i])
+
                 tags[0:0] += (n-1)*['<s>']
                 tags.append('</s>')
                 for i in range(len(tags) - n + 1):
@@ -221,12 +208,16 @@ class MLHMM(HMM):
                     n_1gram = tuple(tags[i:i + n - 1])
                     tag_counts[ngram] += 1
                     tag_counts[n_1gram] += 1
-            else:
-                empty_sents += 1
 
-        # Restamos el conteo de <s> para las listas vacias
-        self.tag_counts_1['<s>'] -= (n-1) * empty_sents
-        self.tag_counts_1 = dict(self.tag_counts_1)
+        # tagset
+        self.t_set = list(self.tag_counts_1.keys())
+        # wordset
+        self.w_set = w_set
+        # tamaño vocabulario
+        self.V = len(self.w_set)
+        self.len_t_set = len(self.t_set)
+        self.word_tag_counts = dict(word_tag_counts)
+        self.tag_counts_1 = dict(tag_counts_1)
         self.tag_counts = dict(tag_counts)
 
     def trans_prob(self, tag, prev_tags):
@@ -239,14 +230,12 @@ class MLHMM(HMM):
             prev_tags = ()
         result = 0
 
-        p_tc = self.tag_counts.get(prev_tags, 0.0)
+        p_tc = float(self.tag_counts.get(prev_tags, 0.0))
         tc = self.tag_counts.get(prev_tags + (tag,), 0.0)
         if self.addone:
-            V = self.V
-            result = (tc + 1) / (p_tc + V)
+            result = (tc + 1.0) / (p_tc + self.len_t_set)
         else:
-            if p_tc is not 0:
-                result = tc / p_tc
+            result = tc / p_tc
         return result
 
     def out_prob(self, word, tag):
@@ -256,11 +245,11 @@ class MLHMM(HMM):
         tag -- the tag.
         """
         if self.unknown(word):
-            result = 1 / self.V
+            result = 1.0 / float(self.V)
         else:
-            result = self.tag_counts_1.get(tag, 0.0)
-            if result is not 0:
-                result = self.word_tag_counts.get((word, tag), 0.0) / result
+            p = float(self.tag_counts_1.get(tag, 0.0))
+            if p is not 0:
+                result = self.word_tag_counts.get(tag,{}).get(word,0.0) / p
 
         return result
 

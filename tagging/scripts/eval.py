@@ -97,12 +97,12 @@ if __name__ == '__main__':
     # 10 etiquetas frecuentas extraidas de stats.py
     most_frq_tags = ('nc', 'sp', 'da', 'vm', 'aq', 'np', 'rg', 'cc', 'di', 'cs')
 
-    print('\t', end='')
-    print('\t'.join(most_frq_tags))
+    print('   ', end='')
+    print('   |'.join(most_frq_tags))
     for gtag in most_frq_tags:
         # Normalizamos los conteos con la suma de la fila
         norm = sum(conf_matrix[gtag].values())
-        print("{}\t".format(gtag), end='')
+        print("{}|".format(gtag), end='')
         for ptag in most_frq_tags:
-            print("{:.2}\t".format(conf_matrix[gtag][ptag]/norm), end=' ')
+            print("{:.2}|".format(conf_matrix[gtag][ptag]/norm), end=' ')
         print('\n')

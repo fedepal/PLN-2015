@@ -38,7 +38,7 @@ def word_isdigit(h):
 
 def prev_tags(h):
 
-    return str(h.prev_tags)
+    return h.prev_tags
 
 
 class NPrevTags(Feature):
@@ -56,7 +56,7 @@ class NPrevTags(Feature):
 
         h -- a history.
         """
-        return str(h.prev_tags[-self.n:])
+        return h.prev_tags[-self.n:]
 
 
 class PrevWord(Feature):
