@@ -5,40 +5,35 @@ Ejercicio 1
 
 | Parsed **1444** sentences
 
-| Labeled
-|  Precision: 99.93%
-|  Recall: 14.57%
-|  F1: 25.43%
-| Unlabeled
-|  Precision: 100.00%
-|  Recall: 14.58%
-|  F1: 25.45%
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   99.93%    14.57% 25.43%
+**Unlabeled** 100.00%   14.58% 25.45%
+============= ========= ====== ======
 
 **RBranch**
 
 | Parsed **1444** sentences
 
-| Labeled
-|  Precision: 8.81%
-|  Recall: 14.57%
-|  F1: 10.98%
-| Unlabeled
-|  Precision: 8.87%
-|  Recall: 14.68%
-|  F1: 11.06%
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   8.81%     14.57% 10.98%
+**Unlabeled** 8.87%     14.68% 11.06%
+============= ========= ====== ======
 
 **LBranch**
 
 | Parsed **1444** sentences
 
-| Labeled
-|  Precision: 8.81%
-|  Recall: 14.57%
-|  F1: 10.98%
-| Unlabeled
-|  Precision: 14.71%
-|  Recall: 24.33%
-|  F1: 18.33%
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   8.81%     14.57% 10.98%
+**Unlabeled** 14.71%    24.33% 18.33%
+============= ========= ====== ======
+
 
 Ejercicio 2
 -----------
@@ -58,6 +53,12 @@ producciones con probabilidad. Y se parsea a partir de esta gramática. Luego
 se comparan que el árbol sea el correcto, la probabilidad sea la correcta
 y se compara que pi y bp sean correctos.
 
+Estos dos son posibles parseos, el de la izquierda es el menos probable.
+
+.. image:: https://github.com/fedepal/PLN-2015/blob/practico3/parsing/treeW.png?raw=true
+.. image:: https://github.com/fedepal/PLN-2015/blob/practico3/parsing/treeOK.png?raw=true
+
+
 Ejercicio 3
 -----------
 Para la UPCFG en el init recorro la lista de árboles, los deslexicalizo y
@@ -74,15 +75,12 @@ normal de Chomsky se la deshace para devolver un árbol desbinarizado.
 
 | Parsed **1444** sentences
 
-| Labeled
-|   Precision: 73.14%
-|   Recall: 72.84%
-|   F1: 72.99%
-| Unlabeled
-|   Precision: 75.25%
-|   Recall: 74.94%
-|   F1: 75.09%
-
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   73.14%    72.84% 72.99%
+**Unlabeled** 75.25%    74.94% 75.09%
+============= ========= ====== ======
 
 | real	1m58.124s
 | user	1m57.956s
@@ -97,67 +95,54 @@ markovizacion horizontal.
 
 **horzMarkov = 0**
 
-| Parsed 1444 sentences
-|Labeled
-|   Precision: 70.18%
-|   Recall: 69.95%
-|   F1: 70.06%
-|Unlabeled
-|   Precision: 72.04%
-|   Recall: 71.81%
-|   F1: 71.93%
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   70.18%    69.95% 70.06%
+**Unlabeled** 72.04%    71.81% 71.93%
+============= ========= ====== ======
 
-
-| real	0m59.200s
-| user	0m59.180s
-| sys	0m0.040s
-
+| real	1m0.016s
+| user	0m59.936s
+| sys	0m0.104s
+|
 
 **horzMarkov = 1**
 
-| Parsed 1444 sentences
-| Labeled
-|   Precision: 70.00%
-|   Recall: 77.78%
-|   F1: 73.68%
-| Unlabeled
-|   Precision: 70.00%
-|   Recall: 77.78%
-|   F1: 73.68%
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   74.67%    74.58% 74.62%
+**Unlabeled** 76.54%    76.44% 76.49%
+============= ========= ====== ======
 
-| real	1m12.190s
-| user	1m11.920s
-| sys	0m0.300s
+| real	1m22.816s
+| user	1m22.772s
+| sys	0m0.064s
+|
 
 **horzMarkov = 2**
 
-| Parsed 1444 sentences
-| Labeled
-|   Precision: 74.82%
-|   Recall: 74.30%
-|   F1: 74.56%
-| Unlabeled
-|   Precision: 76.74%
-|   Recall: 76.21%
-|   F1: 76.47%
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   74.82%    74.30% 74.56%
+**Unlabeled** 76.74%    76.21% 76.47%
+============= ========= ====== ======
 
 | real	1m42.013s
 | user	1m41.860s
 | sys	0m0.200s
-
+|
 
 **horzMarkov = 3**
 
-| Parsed 1444 sentences
-| Labeled
-|   Precision: 73.95%
-|   Recall: 73.31%
-|   F1: 73.63%
-| Unlabeled
-|   Precision: 76.11%
-|   Recall: 75.45%
-|   F1: 75.78%
-
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   73.95%    73.31% 73.63%
+**Unlabeled** 76.11%    75.45% 75.78%
+============= ========= ====== ======
 
 | real	1m56.776s
 | user	1m55.028s
@@ -183,29 +168,28 @@ que se modifica pi.
 **UPCFG con unarios**
 
 | Parsed 100 sentences
-| Labeled
-|   Precision: 68.37%
-|   Recall: 68.88%
-|   F1: 68.63%
-| Unlabeled
-|   Precision: 71.61%
-|   Recall: 72.15%
-|   F1: 71.88%
+
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   68.37%    68.88% 68.63%
+**Unlabeled** 71.61%    72.15% 71.88%
+============= ========= ====== ======
 
 | real	82m45.370s
 | user	82m47.452s
 | sys	0m0.916s
 
 **UPCFG sin unarios**
+
 | Parsed 100 sentences
-| Labeled
-|   Precision: 72.70%
-|   Recall: 73.53%
-|   F1: 73.11%
-| Unlabeled
-|   Precision: 75.19%
-|   Recall: 76.04%
-|   F1: 75.61%
+
+============= ========= ====== ======
+|             Precision Recall F1
+============= ========= ====== ======
+**Labeled**   72.70%    73.53% 73.11%
+**Unlabeled** 75.19%    76.04% 75.61%
+============= ========= ====== ======
 
 | real	0m21.348s
 | user	0m21.272s
