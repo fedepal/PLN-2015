@@ -7,6 +7,8 @@ Para este práctico se propone entrenar y evaluar un modelo basado en redes neur
 Para ello se utiliza el framework SyntaxNet basado en TensorFlow, que es una implementación de este Parser de Dependencias.
 
 Los pasos que se siguieron fueron los siguientes:
++ Se descargo el código fuente desde [github](https://github.com/tensorflow/models/tree/master/syntaxnet).
+
 + Se instalaron las dependencias necesarias para que SyntaxNet funcione:
 
   - python 2.7
@@ -16,14 +18,12 @@ Los pasos que se siguieron fueron los siguientes:
   - asciitree
   - numpy
 
-
-+ Se descargo el código fuente desde [github](https://github.com/tensorflow/models/tree/master/syntaxnet).
-
 + Además se instaló Cuda 7.5 para poder utilizar tensorflow con la GPU. Se siguieron los siguientes issues [#173](https://github.com/tensorflow/models/issues/173) y [#248](https://github.com/tensorflow/models/issues/248)
 
 SyntaxNet es un parser de dependencias basado en transiciones, que construye el parseo incrementalmente.
 El entrenamiento del modelo consiste en primero entrenar un POS Tagger. Luego se utilizan estos outputs como features para el entrenamiento del parser de dependencias.
 Este entrenamiento consiste en dos partes:
+
 1. *Local pre-training* : un pre entrenamiento utilizando decisiones locales.
 Una vez que se tiene el corpus taggeado, se entrena un parser de dependencias normalizado localmente, con el siguiente comando:
 
@@ -101,7 +101,12 @@ done
 
 Se siguió el tutorial para entrenar un nuevo modelo utilizando como corpus el AnCora de dependencias. El corpus utilizado se descargo desde [Universal Dependencies](http://universaldependencies.org/).
 
-Se realizaron pruebas con los siguientes parámetros y se obtuvieron los siguientes resultados, para el tamaño y cantidad de hidden layers se utilizó lo mismo con el paper.
+La PC utilizada cuenta con las siguientes características, procesador
+de 4 núcleos a 2.6Ghz, 8gb de ram y gpu Nvidia 840M de 2gb.
+Los tiempos promedio de entrenamiento con CPU ~20hs, con GPU ~8hs.
+
+Se realizaron pruebas con los siguientes parámetros y se obtuvieron los siguientes resultados, para el tamaño y cantidad de hidden layers se utilizó lo mismo que en el paper.
+
 1.
   * POS TAGGER:
     * batch_size: 32
@@ -246,3 +251,29 @@ INFO:tensorflow:num correct tokens: 46402
 INFO:tensorflow:total tokens: 53594
 INFO:tensorflow:Seconds elapsed in evaluation: 196.28, eval metric: 86.58%
 ```
+
+###### Ejemplos de parseo
+![Parse 1](parse1.png)
+
+Se incluye en el repositorio los archivos del modelo entrenado que se pueden utilizar para parsear, para esto se necesita descargar el repositorio de syntaxnet.
+
+Reemplazar todos los archivos en la carpeta `models/syntaxnet/syntaxnet/models/parsey_universal` por los archivos de la carpeta `model`.
+
+Reemplzar el archivo `demo.sh` en la carpeta `/models/syntaxnet/syntaxnet` por el archivo demo.sh que se encuentra en el repositorio.
+
+Luego desde la carpeta `models/syntaxnet` ejecutar:
+```shell
+  echo "Yo vi al perro con el telescopio" | syntaxnet/demo.sh
+
+  Input: Yo vi al perro con el telescopio
+  Parse:
+  vi VERB ROOT
+   +-- Yo PRON nsubj
+   +-- perro NOUN dobj
+   |   +-- al NUM nummod
+   +-- telescopio NOUN nmod
+       +-- con ADP case
+       +-- el DET det
+
+```
+Como se utilizo el corpus AnCora de universaldependencies.org, este corpus usa las dependencias listadas en la siguiente [página](http://universaldependencies.org/u/dep/)
