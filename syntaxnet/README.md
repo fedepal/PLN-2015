@@ -252,14 +252,14 @@ INFO:tensorflow:total tokens: 53594
 INFO:tensorflow:Seconds elapsed in evaluation: 196.28, eval metric: 86.58%
 ```
 
-###### Ejemplos de parseo
+###### Ejemplo de parseo
 ![Parse 1](parse1.png)
 
 Se incluye en el repositorio los archivos del modelo entrenado que se pueden utilizar para parsear, para esto se necesita descargar el repositorio de syntaxnet.
 
 Reemplazar todos los archivos en la carpeta `models/syntaxnet/syntaxnet/models/parsey_universal` por los archivos de la carpeta `model`.
 
-Reemplzar el archivo `demo.sh` en la carpeta `/models/syntaxnet/syntaxnet` por el archivo demo.sh que se encuentra en el repositorio.
+Reemplazar el archivo `demo.sh` en la carpeta `/models/syntaxnet/syntaxnet` por el archivo demo.sh que se encuentra en el repositorio.
 
 Luego desde la carpeta `models/syntaxnet` ejecutar:
 ```shell
